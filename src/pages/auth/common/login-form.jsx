@@ -48,7 +48,7 @@ const LoginForm = () => {
         }, 1000);
       })
       .catch(() => {
-        setLoading(false);
+        
         toast.error("Invalid credentials", {
           position: "top-right",
           autoClose: 1500,

@@ -7,7 +7,7 @@ const token = localStorage.getItem('jwt');
 export const fetchPromotions = createAsyncThunk('promotions/fetchPromotions', async (_, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
     try {
-        const res = await fetch(`${API}promotions`, {
+        const res = await fetch(`${API}developers`, {
             // headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
             headers: { 'Content-Type': 'application/json' }
 
@@ -99,8 +99,8 @@ export const editPromotion = createAsyncThunk('promotions/editPromotions', async
     }
 });
 
-const promotionsSlice = createSlice({
-    name: 'promotions',
+const developersSlice = createSlice({
+    name: 'developers',
     initialState,
     reducers: {
         cleanRecord: (state) => {
@@ -178,4 +178,4 @@ const promotionsSlice = createSlice({
     }
 });
 
-export default promotionsSlice.reducer;
+export default developersSlice.reducer;
