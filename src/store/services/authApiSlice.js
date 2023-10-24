@@ -1,7 +1,6 @@
 import { toast } from "react-toastify";
 
-
-const API_URL = "http://192.168.11.124:7777/";
+const API_URL = "http://localhost:7777/";
 // const API_URL = "https://dummyjson.com/auth/";
 
 const register = async (username, email, password) => {
@@ -60,9 +59,8 @@ const login = async (username, password) => {
   }
 };
 
-const logout =  () => {
+const logout = () => {
   localStorage.removeItem("user");
-
 };
 
 const getCurrentUser = () => {

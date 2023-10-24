@@ -257,9 +257,13 @@ const DisplayPromotion = () => {
   const error = useSelector((state) => state.promotions.error);
 
   // Dispatch the fetchPromotions action when needed
+
+  
   useEffect(() => {
     dispatch(fetchPromotions());
   }, [dispatch]);
+
+
   console.log(promotions)
   const tableRows = promotions.map((promotion) => (
     <tr key={promotion.id}>

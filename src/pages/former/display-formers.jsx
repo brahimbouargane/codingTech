@@ -1,11 +1,10 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { advancedTable } from "../../constant/table-data";
 import Card from "@/components/ui/Card";
 import Icon from "@/components/ui/Icon";
 import Dropdown from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
 import Tooltip from "@/components/ui/Tooltip";
-
 
 import { useNavigate } from "react-router-dom";
 import {
@@ -41,6 +40,7 @@ const IndeterminateCheckbox = React.forwardRef(
 
 const DisplayFormers = () => {
   const navigate = useNavigate();
+  const [formersData, setFormersData] = useState([]);
   const actions = [
     {
       name: "send",
@@ -80,28 +80,18 @@ const DisplayFormers = () => {
       },
     },
     {
-      Header: "Order",
-      accessor: "order",
-      Cell: (row) => {
-        return <span>#{row?.cell?.value}</span>;
-      },
-    },
-    {
-      Header: "customer",
-      accessor: "customer",
+      Header: "image",
+      accessor: "image",
       Cell: (row) => {
         return (
           <div>
             <span className="inline-flex items-center">
               <span className="w-7 h-7 rounded-full ltr:mr-3 rtl:ml-3 flex-none bg-slate-600">
                 <img
-                  src={row?.cell?.value.image}
+                  src={row?.cell?.value}
                   alt=""
                   className="object-cover w-full h-full rounded-full"
                 />
-              </span>
-              <span className="text-sm text-slate-600 dark:text-slate-300 capitalize">
-                {row?.cell?.value.name}
               </span>
             </span>
           </div>
@@ -109,28 +99,35 @@ const DisplayFormers = () => {
       },
     },
     {
-      Header: "date",
-      accessor: "date",
+      Header: "UserName",
+      accessor: "username",
+      Cell: (row) => {
+        return <span>#{row?.cell?.value}</span>;
+      },
+    },
+    {
+      Header: "Date Naissance",
+      accessor: "dateNaissance",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
     },
     {
-      Header: "quantity",
-      accessor: "quantity",
+      Header: "telephone",
+      accessor: "telephone",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
     },
     {
-      Header: "amount",
-      accessor: "amount",
+      Header: "salair",
+      accessor: "nom",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
-    },
+    } /*,
     {
-      Header: "status",
+      Header: "ima",
       accessor: "status",
       Cell: (row) => {
         return (
@@ -159,19 +156,29 @@ const DisplayFormers = () => {
           </span>
         );
       },
-    },
+    }*/,
     {
       Header: "action",
       accessor: "action",
       Cell: (row) => {
         return (
           <div className="flex space-x-3 rtl:space-x-reverse">
-            <Tooltip content="View" placement="top" arrow animation="shift-away">
+            <Tooltip
+              content="View"
+              placement="top"
+              arrow
+              animation="shift-away"
+            >
               <button className="action-btn" type="button">
                 <Icon icon="heroicons:eye" />
               </button>
             </Tooltip>
-            <Tooltip content="Edit" placement="top" arrow animation="shift-away">
+            <Tooltip
+              content="Edit"
+              placement="top"
+              arrow
+              animation="shift-away"
+            >
               <button className="action-btn" type="button">
                 <Icon icon="heroicons:pencil-square" />
               </button>
@@ -193,8 +200,24 @@ const DisplayFormers = () => {
     },
   ];
 
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
   const columns = useMemo(() => COLUMNS, []);
-  const data = useMemo(() => advancedTable, []);
+  const data = useMemo(() => {
+    // Use the map function to format the date field
+    return formersData.map((former) => {
+      return {
+        ...former, // Copy all properties from the original former object
+        dateNaissance: formatDate(former.dateNaissance), // Format the date
+      };
+    });
+  }, [formersData]);
 
   const tableInstance = useTable(
     {
@@ -246,6 +269,24 @@ const DisplayFormers = () => {
   } = tableInstance;
 
   const { globalFilter, pageIndex, pageSize } = state;
+  useEffect(() => {
+    fetch("http://localhost:7777/formateurs")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // Update the state with the fetched data
+        setFormersData(data);
+        console.log(data); // Set loading to false
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        setLoading(false); // Set loading to false even in case of an error
+      });
+  }, []);
 
   return (
     <>
