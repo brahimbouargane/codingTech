@@ -14,7 +14,16 @@ import {
   useGlobalFilter,
   usePagination,
 } from "react-table";
+import {
+  fetchPromotions,
+  fetchPromotion,
+  deletePromotion,
+  insertPromotion,
+  editPromotion,
+} from "../../store/reducers/recruiterSlice";
+
 import GlobalFilter from "@/util/GlobalFilter";
+import { useSelector , useDispatch} from "react-redux";
 
 const IndeterminateCheckbox = React.forwardRef(
   ({ indeterminate, ...rest }, ref) => {
@@ -40,6 +49,8 @@ const IndeterminateCheckbox = React.forwardRef(
 
 const DisplayRecruiters = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const developers = useSelector((state) => state.developers.records);
   const [formersData, setFormersData] = useState([]);
   const actions = [
     {
@@ -211,13 +222,17 @@ const DisplayRecruiters = () => {
   const columns = useMemo(() => COLUMNS, []);
   const data = useMemo(() => {
     // Use the map function to format the date field
-    return formersData.map((former) => {
+    return developers.map((former) => {
       return {
         ...former, // Copy all properties from the original former object
         dateNaissance: formatDate(former.dateNaissance), // Format the date
       };
     });
-  }, [formersData]);
+  }, [developers]);
+
+  useEffect(() => {
+    dispatch(fetchPromotions());
+  }, [dispatch]);
 
   const tableInstance = useTable(
     {
