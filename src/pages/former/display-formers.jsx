@@ -6,6 +6,15 @@ import Dropdown from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
 import Tooltip from "@/components/ui/Tooltip";
 
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchFormers,
+  fetchFormer,
+  deleteFormer,
+  insertFormer,
+  editFormer,
+} from "../../store/reducers/formerSlice";
+
 import { useNavigate } from "react-router-dom";
 import {
   useTable,
@@ -40,7 +49,10 @@ const IndeterminateCheckbox = React.forwardRef(
 
 const DisplayFormers = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [formersData, setFormersData] = useState([]);
+  const formers = useSelector((state) => state.former.records);
+
   const actions = [
     {
       name: "send",
@@ -99,10 +111,17 @@ const DisplayFormers = () => {
       },
     },
     {
-      Header: "UserName",
-      accessor: "username",
+      Header: "Nom",
+      accessor: "nom",
       Cell: (row) => {
-        return <span>#{row?.cell?.value}</span>;
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
+    {
+      Header: "Prenom",
+      accessor: "prenom",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
@@ -113,50 +132,12 @@ const DisplayFormers = () => {
       },
     },
     {
-      Header: "telephone",
+      Header: "Telephone",
       accessor: "telephone",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
     },
-    {
-      Header: "salair",
-      accessor: "nom",
-      Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
-      },
-    } /*,
-    {
-      Header: "ima",
-      accessor: "status",
-      Cell: (row) => {
-        return (
-          <span className="block w-full">
-            <span
-              className={` inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${
-                row?.cell?.value === "paid"
-                  ? "text-success-500 bg-success-500"
-                  : ""
-              } 
-            ${
-              row?.cell?.value === "due"
-                ? "text-warning-500 bg-warning-500"
-                : ""
-            }
-            ${
-              row?.cell?.value === "cancled"
-                ? "text-danger-500 bg-danger-500"
-                : ""
-            }
-            
-             `}
-            >
-              {row?.cell?.value}
-            </span>
-          </span>
-        );
-      },
-    }*/,
     {
       Header: "action",
       accessor: "action",
@@ -200,24 +181,30 @@ const DisplayFormers = () => {
     },
   ];
 
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
+  function formatDateWithoutTime(dateString) {
+    const parsedDate = new Date(dateString);
+  
+    const year = parsedDate.getUTCFullYear();
+    const month = String(parsedDate.getUTCMonth() + 1).padStart(2, '0'); // Month is 0-indexed, so add 1
+    const day = String(parsedDate.getUTCDate()).padStart(2, '0');
+  
     return `${year}-${month}-${day}`;
   }
 
   const columns = useMemo(() => COLUMNS, []);
   const data = useMemo(() => {
     // Use the map function to format the date field
-    return formersData.map((former) => {
+    return formers.map((former) => {
       return {
         ...former, // Copy all properties from the original former object
-        dateNaissance: formatDate(former.dateNaissance), // Format the date
+        dateNaissance: formatDateWithoutTime(former.dateNaissance), // Format the date
       };
     });
-  }, [formersData]);
+  }, [formers]);
+
+  useEffect(() => {
+    dispatch(fetchFormers());
+  }, [dispatch]);
 
   const tableInstance = useTable(
     {
@@ -269,24 +256,7 @@ const DisplayFormers = () => {
   } = tableInstance;
 
   const { globalFilter, pageIndex, pageSize } = state;
-  useEffect(() => {
-    fetch("http://localhost:7777/formateurs")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        // Update the state with the fetched data
-        setFormersData(data);
-        console.log(data); // Set loading to false
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        setLoading(false); // Set loading to false even in case of an error
-      });
-  }, []);
+
 
   return (
     <>

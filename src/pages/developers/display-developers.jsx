@@ -51,7 +51,7 @@ const DisplayDevelopers = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [formersData, setFormersData] = useState([]);
-  const developers = useSelector((state) => state.developers.records);
+  const developers = useSelector((state) => state.developer.records);
   const actions = [
     {
       name: "send",
@@ -284,24 +284,7 @@ const DisplayDevelopers = () => {
   } = tableInstance;
 
   const { globalFilter, pageIndex, pageSize } = state;
-  // useEffect(() => {
-  //   fetch("http://localhost:7777/developers")
-  //     .then((response) => {
-  //       if (!response.ok) {
-  //         throw new Error("Network response was not ok");
-  //       }
-  //       return response.json();
-  //     })
-  //     .then((data) => {
-  //       // Update the state with the fetched data
-  //       setFormersData(data);
-  //       console.log(data); // Set loading to false
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching data:", error);
-  //       setLoading(false); // Set loading to false even in case of an error
-  //     });
-  // }, []);
+
 
   return (
     <>

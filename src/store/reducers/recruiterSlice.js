@@ -5,16 +5,16 @@ const initialState = { records: [], loading: false, error: null, record: null };
 const API = "http://192.168.11.116:7777/";
 const token = localStorage.getItem('jwt');
 
-export const fetchPromotions = createAsyncThunk('promotions/fetchPromotions', async (_, thunkAPI) => {
+export const fetchRecruiters = createAsyncThunk('recruiter/fetchRecruiters', async (_, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
     try {
-        const res = await fetch(`${API}promotions`, {
+        const res = await fetch(`${API}recruiters`, {
             // headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
             headers: { 'Content-Type': 'application/json' }
 
         });
         if (!res.ok) {
-            throw new Error('Failed to fetch promotions');
+            throw new Error('Failed to fetch recruiters');
         }
         const data = await res.json();
         return data;
@@ -23,12 +23,12 @@ export const fetchPromotions = createAsyncThunk('promotions/fetchPromotions', as
     }
 });
 
-export const fetchPromotion = createAsyncThunk('promotions/fetchPromotion', async (id, thunkAPI) => {
+export const fetchRecruiter = createAsyncThunk('recruiter/fetchRecruiter', async (id, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
     try {
-        const res = await fetch(`${API}promotions/${id}`);
+        const res = await fetch(`${API}recruiters/${id}`);
         if (!res.ok) {
-            throw new Error('Failed to fetch promotion');
+            throw new Error('Failed to fetch recruiter');
         }
         const data = await res.json();
         return data;
@@ -37,15 +37,15 @@ export const fetchPromotion = createAsyncThunk('promotions/fetchPromotion', asyn
     }
 });
 
-export const deletePromotion = createAsyncThunk('promotions/deletePromotions', async (id, thunkAPI) => {
+export const deleteRecruiter = createAsyncThunk('recruiter/deleteRecruiter', async (id, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
     try {
-        const res = await fetch(`${API}promotions/${id}`, {
+        const res = await fetch(`${API}recruiters/${id}`, {
             method: 'DELETE',
             // headers: { Authorization: `Bearer ${token}` }
         });
         if (!res.ok) {
-            throw new Error('Failed to delete promotion');
+            throw new Error('Failed to delete recruiter');
         }
         return id;
     } catch (error) {
@@ -53,10 +53,10 @@ export const deletePromotion = createAsyncThunk('promotions/deletePromotions', a
     }
 });
 
-export const insertPromotion = createAsyncThunk('promotions/insertPromotion', async (item, thunkAPI) => {
+export const insertRecruiter = createAsyncThunk('recruiter/insertRecruiter', async (item, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
     try {
-        const res = await fetch(`${API}promotions/add`, {
+        const res = await fetch(`${API}recruiters/add`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ export const insertPromotion = createAsyncThunk('promotions/insertPromotion', as
             body: JSON.stringify(item)
         });
         if (!res.ok) {
-            throw new Error('Failed to insert promotion');
+            throw new Error('Failed to insert recruiter');
         }
         const data = await res.json();
         return data;
@@ -74,24 +74,24 @@ export const insertPromotion = createAsyncThunk('promotions/insertPromotion', as
     }
 });
 
-export const editPromotion = createAsyncThunk('promotions/editPromotions', async (item, thunkAPI) => {
+export const editRecruiter = createAsyncThunk('recruiter/editRecruiter', async (item, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
     try {
-        const res = await fetch(`${API}promotions/${item.id}`, {
+        const res = await fetch(`${API}recruiters/${item.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 // Authorization: `Bearer ${token}`
             },
             body: JSON.stringify({
-                email: item.email,
-                name: item.name,
-                telephone: item.telephone,
-                role_id: item.role_id
+                // email: item.email,
+                // name: item.name,
+                // telephone: item.telephone,
+                // role_id: item.role_id
             })
         });
         if (!res.ok) {
-            throw new Error('Failed to edit promotion');
+            throw new Error('Failed to edit recruiter');
         }
         const data = await res.json();
         return data;
@@ -100,8 +100,8 @@ export const editPromotion = createAsyncThunk('promotions/editPromotions', async
     }
 });
 
-const promotionsSlice = createSlice({
-    name: 'promotion',
+const recruiterSlice = createSlice({
+    name: 'recruiter',
     initialState,
     reducers: {
         cleanRecord: (state) => {
@@ -111,72 +111,72 @@ const promotionsSlice = createSlice({
 
     extraReducers: {
         // get one promotion
-        [fetchPromotion.pending]: (state) => {
+        [fetchRecruiter.pending]: (state) => {
             state.loading = true;
             state.error = null;
         },
-        [fetchPromotion.fulfilled]: (state, action) => {
+        [fetchRecruiter.fulfilled]: (state, action) => {
             state.loading = false;
             state.record = action.payload;
         },
-        [fetchPromotion.rejected]: (state, action) => {
+        [fetchRecruiter.rejected]: (state, action) => {
             state.loading = false;
             state.error = action.payload;
         },
         // fetch promotions
-        [fetchPromotions.pending]: (state) => {
+        [fetchRecruiters.pending]: (state) => {
             state.loading = true;
             state.error = null;
         },
-        [fetchPromotions.fulfilled]: (state, action) => {
+        [fetchRecruiters.fulfilled]: (state, action) => {
             state.loading = false;
             state.records = action.payload;
         },
-        [fetchPromotions.rejected]: (state, action) => {
+        [fetchRecruiters.rejected]: (state, action) => {
             state.loading = false;
             state.error = action.payload;
         },
         // create promotion
-        [insertPromotion.pending]: (state) => {
+        [insertRecruiter.pending]: (state) => {
             state.loading = true;
             state.error = null;
         },
-        [insertPromotion.fulfilled]: (state, action) => {
+        [insertRecruiter.fulfilled]: (state, action) => {
             state.loading = false;
             state.records.push(action.payload);
         },
-        [insertPromotion.rejected]: (state, action) => {
+        [insertRecruiter.rejected]: (state, action) => {
             state.loading = false;
             state.error = action.payload;
         },
         // delete promotion
-        [deletePromotion.pending]: (state) => {
+        [deleteRecruiter.pending]: (state) => {
             state.loading = true;
             state.error = null;
         },
-        [deletePromotion.fulfilled]: (state, action) => {
+        [deleteRecruiter.fulfilled]: (state, action) => {
             state.loading = false;
             state.records = state.records.filter((el) => el.id !== action.payload);
         },
-        [deletePromotion.rejected]: (state, action) => {
+        [deleteRecruiter.rejected]: (state, action) => {
             state.loading = false;
             state.error = action.payload;
         },
 
         // edit promotion
-        [editPromotion.pending]: (state) => {
+        [editRecruiter.pending]: (state) => {
             state.loading = true;
             state.error = null;
         },
-        [editPromotion.fulfilled]: (state, action) => {
+        [editRecruiter.fulfilled]: (state, action) => {
             state.loading = false;
             state.record = action.payload;
         },
-        [editPromotion.rejected]: (state, action) => {
+        [editRecruiter.rejected]: (state, action) => {
             state.loading = false;
             state.error = action.payload;
         }
     }
 });
 
-export default promotionsSlice.reducer;
+export default recruiterSlice.reducer;

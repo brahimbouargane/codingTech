@@ -1,14 +1,27 @@
-import React, { useState,useEffect, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { advancedTable } from "../../constant/table-data";
 import Card from "@/components/ui/Card";
 import Icon from "@/components/ui/Icon";
 import Dropdown from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
 import Tooltip from "@/components/ui/Tooltip";
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchPromotions, fetchPromotion, deletePromotion, insertPromotion, editPromotion } from '../../store/reducers/promotionSlice';
+import Modal from "@/components/ui/Modal";
+import Textinput from "@/components/ui/Textinput";
+import Flatpickr from "react-flatpickr";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import FormGroup from "@/components/ui/FormGroup";
 
 
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchPromotions,
+  fetchPromotion,
+  deletePromotion,
+  insertPromotion,
+  editPromotion,
+} from "../../store/reducers/promotionSlice";
 
 import { useNavigate } from "react-router-dom";
 import {
@@ -44,6 +57,9 @@ const IndeterminateCheckbox = React.forwardRef(
 
 const DisplayPromotion = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [formersData, setFormersData] = useState([]);
+  const promotions = useSelector((state) => state.promotion.records);
   const actions = [
     {
       name: "send",
@@ -83,84 +99,38 @@ const DisplayPromotion = () => {
       },
     },
     {
-      Header: "Order",
-      accessor: "order",
-      Cell: (row) => {
-        return <span>#{row?.cell?.value}</span>;
-      },
-    },
-    {
-      Header: "customer",
-      accessor: "customer",
-      Cell: (row) => {
-        return (
-          <div>
-            <span className="inline-flex items-center">
-              <span className="w-7 h-7 rounded-full ltr:mr-3 rtl:ml-3 flex-none bg-slate-600">
-                <img
-                  src={row?.cell?.value.image}
-                  alt=""
-                  className="object-cover w-full h-full rounded-full"
-                />
-              </span>
-              <span className="text-sm text-slate-600 dark:text-slate-300 capitalize">
-                {row?.cell?.value.name}
-              </span>
-            </span>
-          </div>
-        );
-      },
-    },
-    {
-      Header: "date",
-      accessor: "date",
+      Header: "Nom",
+      accessor: "nom",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
     },
     {
-      Header: "quantity",
-      accessor: "quantity",
+      Header: "Date Dub",
+      accessor: "date_dube",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
     },
     {
-      Header: "amount",
-      accessor: "amount",
+      Header: "Date Fin",
+      accessor: "date_fin",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
     },
     {
-      Header: "status",
+      Header: "formateurs",
+      accessor: "formateurs",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
+    {
+      Header: "Status",
       accessor: "status",
       Cell: (row) => {
-        return (
-          <span className="block w-full">
-            <span
-              className={` inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${
-                row?.cell?.value === "paid"
-                  ? "text-success-500 bg-success-500"
-                  : ""
-              } 
-            ${
-              row?.cell?.value === "due"
-                ? "text-warning-500 bg-warning-500"
-                : ""
-            }
-            ${
-              row?.cell?.value === "cancled"
-                ? "text-danger-500 bg-danger-500"
-                : ""
-            }
-            
-             `}
-            >
-              {row?.cell?.value}
-            </span>
-          </span>
-        );
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
@@ -169,12 +139,22 @@ const DisplayPromotion = () => {
       Cell: (row) => {
         return (
           <div className="flex space-x-3 rtl:space-x-reverse">
-            <Tooltip content="View" placement="top" arrow animation="shift-away">
+            <Tooltip
+              content="View"
+              placement="top"
+              arrow
+              animation="shift-away"
+            >
               <button className="action-btn" type="button">
                 <Icon icon="heroicons:eye" />
               </button>
             </Tooltip>
-            <Tooltip content="Edit" placement="top" arrow animation="shift-away">
+            <Tooltip
+              content="Edit"
+              placement="top"
+              arrow
+              animation="shift-away"
+            >
               <button className="action-btn" type="button">
                 <Icon icon="heroicons:pencil-square" />
               </button>
@@ -196,8 +176,32 @@ const DisplayPromotion = () => {
     },
   ];
 
+  function formatDateWithoutTime(dateString) {
+    const parsedDate = new Date(dateString);
+  
+    const year = parsedDate.getUTCFullYear();
+    const month = String(parsedDate.getUTCMonth() + 1).padStart(2, '0'); // Month is 0-indexed, so add 1
+    const day = String(parsedDate.getUTCDate()).padStart(2, '0');
+  
+    return `${year}-${month}-${day}`;
+  }
+
   const columns = useMemo(() => COLUMNS, []);
-  const data = useMemo(() => advancedTable, []);
+  const data = useMemo(() => {
+    // Use the map function to format the date field
+    return promotions.map((promotion) => {
+      return {
+        ...promotion, // Copy all properties from the original former object
+        date_dube: formatDateWithoutTime(promotion.date_dube), // Format the date
+        date_fin: formatDateWithoutTime(promotion.date_fin),
+      };
+    });
+  }, [promotions]);
+  console.log(data)
+
+  useEffect(() => {
+    dispatch(fetchPromotions());
+  }, [dispatch]);
 
   const tableInstance = useTable(
     {
@@ -249,33 +253,67 @@ const DisplayPromotion = () => {
   } = tableInstance;
 
   const { globalFilter, pageIndex, pageSize } = state;
-  const dispatch = useDispatch();
+ 
 
-  const promotions = useSelector((state) => state.promotions.records); // Adjust the selector based on your Redux store structure
-  const promotion = useSelector((state) => state.promotions.record);
-  const loading = useSelector((state) => state.promotions.loading);
-  const error = useSelector((state) => state.promotions.error);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
 
-  // Dispatch the fetchPromotions action when needed
+  const handleModalOpen = () => {
+    setIsModalOpen(true);
+  }
 
-  
-  useEffect(() => {
-    dispatch(fetchPromotions());
-  }, [dispatch]);
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  }
 
+  const FormValidationSchema = yup
+  .object({
+    title: yup.string().required("Title is required"),
+    status: yup.mixed().required("status is required"),
+    date_dube: yup
+      .date()
+      .required("Start date is required")
+      .min(new Date(), "Start date must be greater than today"),
+    date_fin: yup
+      .date()
+      .required("End date is required")
+      .min(new Date(), "End date must be greater than today"),
+  })
+  .required();
 
-  console.log(promotions)
-  const tableRows = promotions.map((promotion) => (
-    <tr key={promotion.id}>
-      <td>{promotion.id}</td>
-      <td>{promotion.nom}</td>
-      <td>{promotion.date_dube}</td>
-      <td>{promotion.date_fin}</td>
-      <td>{promotion.status}</td>
-      <td>{promotion.nbrDeveloper}</td>
-    </tr>
-  ));
-  
+const {
+  register,
+  control,
+  reset,
+  formState: { errors },
+  handleSubmit,
+} = useForm({
+  resolver: yupResolver(FormValidationSchema),
+  mode: "all",
+});
+
+const onSubmit = (data) => {
+  const promotion = {
+    nom: data.title,
+    date_dube:  startDate.toISOString().split("T")[0],
+    date_fin: endDate.toISOString().split("T")[0],
+    status: data.status
+  };
+ 
+ 
+  dispatch(insertPromotion(promotion))
+    .unwrap()
+    .then(() => {
+        dispatch(fetchPromotions());
+        reset();
+        handleModalClose();
+    })
+    .catch((err) => {
+        console.log(err);
+    });
+};
+
   return (
     <>
       <Card noborder>
@@ -283,27 +321,14 @@ const DisplayPromotion = () => {
           <h6 className="flex-1 md:mb-0 mb-3">Promotions</h6>
           <div className="md:flex md:space-x-3 items-center flex-none rtl:space-x-reverse">
             <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
-            {/* <Button
-              icon="heroicons-outline:calendar"
-              text="Select date"
-              className=" btn-outline-secondary dark:border-slate-700  text-slate-600 btn-sm font-normal dark:text-slate-300 "
-              iconClass="text-lg"
-            />
             <Button
-              icon="heroicons-outline:filter"
-              text="Filter"
-              className=" btn-outline-secondary text-slate-600 dark:border-slate-700 dark:text-slate-300 font-normal btn-sm "
-              iconClass="text-lg"
-            /> */}
-            <Button
-              icon="heroicons-outline:plus-sm"
-              text="Add Promotion"
-              className=" btn-dark font-normal btn-sm "
-              iconClass="text-lg"
-              onClick={() => {
-                navigate("/invoice-add");
-              }}
-            />
+            icon="heroicons-outline:plus"
+            text="Add Promotion"
+            className="btn-dark dark:bg-slate-800  h-min text-sm font-normal"
+            iconClass=" text-lg"
+            onClick={handleModalOpen}
+          />
+        
           </div>
         </div>
         <div className="overflow-x-auto -mx-6">
@@ -337,7 +362,7 @@ const DisplayPromotion = () => {
                     </tr>
                   ))}
                 </thead>
-                {/* <tbody
+                <tbody
                   className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
                   {...getTableBodyProps}
                 >
@@ -355,23 +380,6 @@ const DisplayPromotion = () => {
                       </tr>
                     );
                   })}
-                </tbody> */}
-                <tbody className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700" {...getTableBodyProps}>
-                  {/* {page.map((row, rowIndex) => {
-                    prepareRow(row);
-                    return (
-                      <tr {...row.getRowProps()} key={rowIndex}>
-                        {row.cells.map((cell, cellIndex) => {
-                          return (
-                            <td {...cell.getCellProps()} className="table-td" key={cellIndex}>
-                              {cell.render("Cell")}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    );
-                  })} */}
-                  {tableRows}
                 </tbody>
               </table>
             </div>
@@ -461,6 +469,78 @@ const DisplayPromotion = () => {
           </ul>
         </div>
       </Card>
+      <Modal
+        activeModal={isModalOpen}
+        onClose={handleModalClose}
+        title="Add Promotion"
+        // Other props you want to pass to the Modal component
+      >
+       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <Textinput
+            name="title"
+            label="Promotion Name"
+            placeholder="Promotion Name"
+            register={register}
+            error={errors.title}
+          />
+          <FormGroup label="Date Dube" id="date-dube" error={errors.date_dube}>
+            <Controller
+              name="date_dube"
+              control={control}
+              render={({ field }) => (
+                <Flatpickr
+                  className="form-control py-2"
+                  id="date_dube"
+                  placeholder="yyyy, dd M"
+                  value={startDate} // Make sure you define startDate in your component state
+                  onChange={(date) => {
+                    field.onChange(date);
+                  }}
+                  options={{
+                    altInput: true,
+                    altFormat: "F j, Y",
+                    dateFormat: "Y-m-d",
+                  }}
+                />
+              )}
+            />
+          </FormGroup>
+          <FormGroup label="Date Fin" id="date-fin" error={errors.date_fin}>
+            <Controller
+              name="date_fin"
+              control={control}
+              render={({ field }) => (
+                <Flatpickr
+                  className="form-control py-2"
+                  id="date_fin"
+                  placeholder="yyyy, dd M"
+                  value={endDate} // Make sure you define endDate in your component state
+                  onChange={(date) => {
+                    field.onChange(date);
+                  }}
+                  options={{
+                    altInput: true,
+                    altFormat: "F j, Y",
+                    dateFormat: "Y-m-d",
+                  }}
+                />
+              )}
+            />
+          </FormGroup>
+          <Textinput
+            name="status"
+            label="Status"
+            placeholder="Status"
+            register={register}
+            error={errors.title}
+          />
+
+          <div className="ltr:text-right rtl:text-left">
+            <button className="btn btn-dark text-center">Add</button>
+          </div>
+        </form>
+
+      </Modal>
     </>
   );
 };

@@ -1,28 +1,10 @@
 import { toast } from "react-toastify";
 
-const API_URL = "http://localhost:7777/";
+// const API_URL = "http://localhost:7777/";
+const API_URL = "http://192.168.11.116:7777/";
+
 // const API_URL = "https://dummyjson.com/auth/";
 
-const register = async (username, email, password) => {
-  try {
-    const response = await fetch(API_URL + "signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        email,
-        password,
-      }),
-    });
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
 
 const login = async (username, password) => {
   try {
@@ -36,14 +18,13 @@ const login = async (username, password) => {
         password,
       }),
     });
-
     const data = await response.json();
-
-    if (data.username) {
-      localStorage.setItem("user", JSON.stringify(data));
+    if (data.jwt) {
+      localStorage.setItem('user', JSON.stringify(data.userDetails));
+      localStorage.setItem('token', data.jwt);
       toast.success("User logged in successfully", {
         position: "top-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -52,7 +33,6 @@ const login = async (username, password) => {
         theme: "light",
       });
     }
-
     return data;
   } catch (error) {
     throw error;
@@ -69,7 +49,6 @@ const getCurrentUser = () => {
 };
 
 const AuthService = {
-  register,
   login,
   logout,
   getCurrentUser,

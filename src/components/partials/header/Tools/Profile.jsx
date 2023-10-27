@@ -4,7 +4,7 @@ import Icon from "@/components/ui/Icon";
 import { Menu, Transition } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutUser } from "@/store/reducers/authSlice";
+import { logout } from "@/store/reducers/authSlice";
 import { toast } from "react-toastify";
 import UserAvatar from "@/assets/images/all-img/user.png";
 
@@ -91,7 +91,7 @@ const Profile = () => {
       label: "Logout",
       icon: "heroicons-outline:login",
       action: () => {
-        dispatch(logoutUser())
+        dispatch(logout())
         .unwrap()
         .then(() => {navigate("/");}) 
       },

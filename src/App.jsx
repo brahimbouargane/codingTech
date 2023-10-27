@@ -10,7 +10,7 @@ const Dashboard = lazy(() => import("./pages/dashboard"));
 //blank pages
 const BlankPage = lazy(() => import("./pages/promotion/blank-page"));
 // Promotion pages
-const AddPromotion = lazy(() => import("./pages/promotion/add-promotion"));
+const AddPromotion = lazy(() => import("./pages/promotion/AddPromotion"));
 const DisplayPromotion = lazy(() => import("./pages/promotion/display-promotions"));
 const AboutPromotion = lazy(() => import("./pages/promotion/about-promotion"));
 // Developer pages
@@ -47,14 +47,14 @@ function App() {
         <Route path="/*" element={<Layout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="blank-page" element={<BlankPage />} />
-          <Route path="add-promotion" element={<AddPromotion />} />
+          <Route path="AddPromotion" element={<AddPromotion />} />
           <Route path="display-promotions" element={<DisplayPromotion />} />
           <Route path="about-promotion" element={<AboutPromotion />} />
           <Route path="add-developer" element={<AddDeveloper />} />
           <Route path="display-developers" element={<DisplayDevelopers />} />
           <Route path="about-developer" element={<AboutDeveloper />} />
           <Route path="add-course" element={<AddCourse />} />
-          <Route path="display-courses" element={<DisplayCourses />} />
+          {/* <Route path="display-courses" element={<DisplayCourses />} /> */}
           <Route path="about-course" element={<AboutCourse />} />
           <Route path="add-former" element={<AddFormer />} />
           <Route path="display-formers" element={<DisplayFormers />} />

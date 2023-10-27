@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 const initialState = { records: [], loading: false, error: null, record: null };
-const API = "http://localhost:7777/";
+// const API = "http://localhost:7777/";
+const API = "http://192.168.11.116:7777/";
 const token = localStorage.getItem('jwt');
 
 export const fetchPromotions = createAsyncThunk('promotions/fetchPromotions', async (_, thunkAPI) => {
@@ -100,7 +101,7 @@ export const editPromotion = createAsyncThunk('promotions/editPromotions', async
 });
 
 const developersSlice = createSlice({
-    name: 'developers',
+    name: 'developer',
     initialState,
     reducers: {
         cleanRecord: (state) => {

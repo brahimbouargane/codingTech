@@ -5,16 +5,16 @@ const initialState = { records: [], loading: false, error: null, record: null };
 const API = "http://192.168.11.116:7777/";
 const token = localStorage.getItem('jwt');
 
-export const fetchPromotions = createAsyncThunk('promotions/fetchPromotions', async (_, thunkAPI) => {
+export const fetchFormers = createAsyncThunk('formers/fetchFormers', async (_, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
     try {
-        const res = await fetch(`${API}promotions`, {
+        const res = await fetch(`${API}formateurs`, {
             // headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
             headers: { 'Content-Type': 'application/json' }
 
         });
         if (!res.ok) {
-            throw new Error('Failed to fetch promotions');
+            throw new Error('Failed to fetch formers');
         }
         const data = await res.json();
         return data;
@@ -23,12 +23,12 @@ export const fetchPromotions = createAsyncThunk('promotions/fetchPromotions', as
     }
 });
 
-export const fetchPromotion = createAsyncThunk('promotions/fetchPromotion', async (id, thunkAPI) => {
+export const fetchFormer = createAsyncThunk('formers/fetchFormer', async (id, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
     try {
-        const res = await fetch(`${API}promotions/${id}`);
+        const res = await fetch(`${API}formateurs/${id}`);
         if (!res.ok) {
-            throw new Error('Failed to fetch promotion');
+            throw new Error('Failed to fetch former');
         }
         const data = await res.json();
         return data;
@@ -37,15 +37,15 @@ export const fetchPromotion = createAsyncThunk('promotions/fetchPromotion', asyn
     }
 });
 
-export const deletePromotion = createAsyncThunk('promotions/deletePromotions', async (id, thunkAPI) => {
+export const deleteFormer = createAsyncThunk('formers/deleteFormer', async (id, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
     try {
-        const res = await fetch(`${API}promotions/${id}`, {
+        const res = await fetch(`${API}formateurs/${id}`, {
             method: 'DELETE',
             // headers: { Authorization: `Bearer ${token}` }
         });
         if (!res.ok) {
-            throw new Error('Failed to delete promotion');
+            throw new Error('Failed to delete former');
         }
         return id;
     } catch (error) {
@@ -53,10 +53,10 @@ export const deletePromotion = createAsyncThunk('promotions/deletePromotions', a
     }
 });
 
-export const insertPromotion = createAsyncThunk('promotions/insertPromotion', async (item, thunkAPI) => {
+export const insertFormer = createAsyncThunk('formers/insertformer', async (item, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
     try {
-        const res = await fetch(`${API}promotions/add`, {
+        const res = await fetch(`${API}formateurs/add`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ export const insertPromotion = createAsyncThunk('promotions/insertPromotion', as
             body: JSON.stringify(item)
         });
         if (!res.ok) {
-            throw new Error('Failed to insert promotion');
+            throw new Error('Failed to insert fromer');
         }
         const data = await res.json();
         return data;
@@ -74,10 +74,10 @@ export const insertPromotion = createAsyncThunk('promotions/insertPromotion', as
     }
 });
 
-export const editPromotion = createAsyncThunk('promotions/editPromotions', async (item, thunkAPI) => {
+export const editFormer = createAsyncThunk('formers/editFormers', async (item, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
     try {
-        const res = await fetch(`${API}promotions/${item.id}`, {
+        const res = await fetch(`${API}formateurs/${item.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ export const editPromotion = createAsyncThunk('promotions/editPromotions', async
             })
         });
         if (!res.ok) {
-            throw new Error('Failed to edit promotion');
+            throw new Error('Failed to edit former');
         }
         const data = await res.json();
         return data;
@@ -100,8 +100,8 @@ export const editPromotion = createAsyncThunk('promotions/editPromotions', async
     }
 });
 
-const promotionsSlice = createSlice({
-    name: 'promotion',
+const formerSlice = createSlice({
+    name: 'former',
     initialState,
     reducers: {
         cleanRecord: (state) => {
@@ -111,72 +111,72 @@ const promotionsSlice = createSlice({
 
     extraReducers: {
         // get one promotion
-        [fetchPromotion.pending]: (state) => {
+        [fetchFormer.pending]: (state) => {
             state.loading = true;
             state.error = null;
         },
-        [fetchPromotion.fulfilled]: (state, action) => {
+        [fetchFormer.fulfilled]: (state, action) => {
             state.loading = false;
             state.record = action.payload;
         },
-        [fetchPromotion.rejected]: (state, action) => {
+        [fetchFormer.rejected]: (state, action) => {
             state.loading = false;
             state.error = action.payload;
         },
         // fetch promotions
-        [fetchPromotions.pending]: (state) => {
+        [fetchFormers.pending]: (state) => {
             state.loading = true;
             state.error = null;
         },
-        [fetchPromotions.fulfilled]: (state, action) => {
+        [fetchFormers.fulfilled]: (state, action) => {
             state.loading = false;
             state.records = action.payload;
         },
-        [fetchPromotions.rejected]: (state, action) => {
+        [fetchFormers.rejected]: (state, action) => {
             state.loading = false;
             state.error = action.payload;
         },
         // create promotion
-        [insertPromotion.pending]: (state) => {
+        [insertFormer.pending]: (state) => {
             state.loading = true;
             state.error = null;
         },
-        [insertPromotion.fulfilled]: (state, action) => {
+        [insertFormer.fulfilled]: (state, action) => {
             state.loading = false;
             state.records.push(action.payload);
         },
-        [insertPromotion.rejected]: (state, action) => {
+        [insertFormer.rejected]: (state, action) => {
             state.loading = false;
             state.error = action.payload;
         },
         // delete promotion
-        [deletePromotion.pending]: (state) => {
+        [deleteFormer.pending]: (state) => {
             state.loading = true;
             state.error = null;
         },
-        [deletePromotion.fulfilled]: (state, action) => {
+        [deleteFormer.fulfilled]: (state, action) => {
             state.loading = false;
             state.records = state.records.filter((el) => el.id !== action.payload);
         },
-        [deletePromotion.rejected]: (state, action) => {
+        [deleteFormer.rejected]: (state, action) => {
             state.loading = false;
             state.error = action.payload;
         },
 
         // edit promotion
-        [editPromotion.pending]: (state) => {
+        [editFormer.pending]: (state) => {
             state.loading = true;
             state.error = null;
         },
-        [editPromotion.fulfilled]: (state, action) => {
+        [editFormer.fulfilled]: (state, action) => {
             state.loading = false;
             state.record = action.payload;
         },
-        [editPromotion.rejected]: (state, action) => {
+        [editFormer.rejected]: (state, action) => {
             state.loading = false;
             state.error = action.payload;
         }
     }
 });
 
-export default promotionsSlice.reducer;
+export default formerSlice.reducer;

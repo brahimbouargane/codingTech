@@ -10,7 +10,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
 
-import { loginUser } from "@/store/reducers/authSlice";
+import { login } from "@/store/reducers/authSlice";
 import { clearMessage } from "@/store/reducers/messageSlice";
 
 
@@ -40,7 +40,7 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const onSubmit = (data) => {
     const { username, password } = data;
-    dispatch(loginUser({ username, password }))
+    dispatch(login({ username, password }))
       .unwrap()
       .then(() => {
         setTimeout(() => {

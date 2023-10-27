@@ -1,15 +1,19 @@
 import layout from "./layout";
 import auth from "./reducers/authSlice"
 import message from "./reducers/messageSlice"
-import promotions from "./reducers/promotionSlice"
-import developers from "./reducers/developerSlice"
+import promotion from "./reducers/promotionSlice"
+import developer from "./reducers/developerSlice"
+import recruiter from "./reducers/recruiterSlice"
+import former from "./reducers/formerSlice"
 
 
 const rootReducer = {
   layout,
   auth,
-  developers,
-  promotions,
+  developer,
+  promotion,
+  recruiter,
+  former,
   message,
 };
 export default rootReducer;

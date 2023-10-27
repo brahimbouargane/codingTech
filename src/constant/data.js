@@ -24,11 +24,11 @@ export const menuItems = [
     icon: "heroicons-outline:user-group",
     link: "display-developers",
   },
-  {
-    title: "Courses",
-    icon: "heroicons-outline:code-bracket-square",
-    link: "display-courses",
-  },
+  // {
+  //   title: "Courses",
+  //   icon: "heroicons-outline:code-bracket-square",
+  //   link: "display-courses",
+  // },
   {
     title: "Recruiters",
     icon: "heroicons-outline:briefcase",
