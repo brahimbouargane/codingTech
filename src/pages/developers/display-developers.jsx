@@ -3,16 +3,17 @@ import { advancedTable } from "../../constant/table-data";
 import Card from "@/components/ui/Card";
 import Icon from "@/components/ui/Icon";
 import Dropdown from "@/components/ui/Dropdown";
+import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 import Tooltip from "@/components/ui/Tooltip";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchPromotions,
-  fetchPromotion,
-  deletePromotion,
-  insertPromotion,
-  editPromotion,
+  fetchDeveloper,
+  fetchDevelopers,
+  deleteDeveloper,
+  insertDeveloper,
+  editDeveloper,
 } from "../../store/reducers/developerSlice";
 
 import { useNavigate } from "react-router-dom";
@@ -131,43 +132,12 @@ const DisplayDevelopers = () => {
       },
     },
     {
-      Header: "salair",
-      accessor: "nom",
+      Header: "Salair",
+      accessor: "salair",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
-    } /*,
-    {
-      Header: "ima",
-      accessor: "status",
-      Cell: (row) => {
-        return (
-          <span className="block w-full">
-            <span
-              className={` inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${
-                row?.cell?.value === "paid"
-                  ? "text-success-500 bg-success-500"
-                  : ""
-              } 
-            ${
-              row?.cell?.value === "due"
-                ? "text-warning-500 bg-warning-500"
-                : ""
-            }
-            ${
-              row?.cell?.value === "cancled"
-                ? "text-danger-500 bg-danger-500"
-                : ""
-            }
-            
-             `}
-            >
-              {row?.cell?.value}
-            </span>
-          </span>
-        );
-      },
-    }*/,
+    },
     {
       Header: "action",
       accessor: "action",
@@ -231,7 +201,7 @@ const DisplayDevelopers = () => {
   }, [developers]);
 
   useEffect(() => {
-    dispatch(fetchPromotions());
+    dispatch(fetchDevelopers());
   }, [dispatch]);
 
   const tableInstance = useTable(
@@ -284,13 +254,22 @@ const DisplayDevelopers = () => {
   } = tableInstance;
 
   const { globalFilter, pageIndex, pageSize } = state;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleModalOpen = () => {
+    setIsModalOpen(true);
+  }
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  }
 
 
   return (
     <>
       <Card noborder>
         <div className="md:flex pb-6 items-center">
-          <h6 className="flex-1 md:mb-0 mb-3">Formers</h6>
+          <h6 className="flex-1 md:mb-0 mb-3">Developers</h6>
           <div className="md:flex md:space-x-3 items-center flex-none rtl:space-x-reverse">
             <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
             {/* <Button
@@ -307,12 +286,10 @@ const DisplayDevelopers = () => {
             /> */}
             <Button
               icon="heroicons-outline:plus-sm"
-              text="Add Former"
+              text="Add Developer"
               className=" btn-dark font-normal btn-sm "
               iconClass="text-lg"
-              onClick={() => {
-                navigate("/invoice-add");
-              }}
+              onClick={handleModalOpen}
             />
           </div>
         </div>
@@ -454,6 +431,21 @@ const DisplayDevelopers = () => {
           </ul>
         </div>
       </Card>
+      <Modal
+        activeModal={isModalOpen}
+        onClose={handleModalClose}
+        title="Add Developer"
+        // Other props you want to pass to the Modal component
+      >
+       <form className="space-y-4">
+         
+
+          <div className="ltr:text-right rtl:text-left">
+            <button className="btn btn-dark text-center">Add</button>
+          </div>
+        </form>
+
+      </Modal>
     </>
   );
 };

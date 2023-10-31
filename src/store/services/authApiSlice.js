@@ -1,8 +1,7 @@
 import { toast } from "react-toastify";
 
 // const API_URL = "http://localhost:7777/";
-const API_URL = "http://192.168.11.116:7777/";
-
+const API_URL = "http://192.168.11.137:7777/";
 // const API_URL = "https://dummyjson.com/auth/";
 
 

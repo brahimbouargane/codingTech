@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { advancedTable } from "../../constant/table-data";
 import Card from "@/components/ui/Card";
 import Icon from "@/components/ui/Icon";
@@ -32,6 +32,7 @@ import {
   usePagination,
 } from "react-table";
 import GlobalFilter from "@/util/GlobalFilter";
+import AddPromotion from "./AddPromotion";
 
 const IndeterminateCheckbox = React.forwardRef(
   ({ indeterminate, ...rest }, ref) => {
@@ -59,7 +60,14 @@ const DisplayPromotion = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [formersData, setFormersData] = useState([]);
+  const [deletedItem, setDeletedItem] = useState();
   const promotions = useSelector((state) => state.promotion.records);
+  const deleteRecord = useCallback((id) => dispatch(deletePromotion(id)), [dispatch]);
+  const deleteHandler = (item) => {
+    deleteRecord(item.row.original.id)
+    dispatch(fetchPromotions());
+  };
+
   const actions = [
     {
       name: "send",
@@ -155,7 +163,7 @@ const DisplayPromotion = () => {
               arrow
               animation="shift-away"
             >
-              <button className="action-btn" type="button">
+              <button className="action-btn" type="button" onClick={handleModalOpen}>
                 <Icon icon="heroicons:pencil-square" />
               </button>
             </Tooltip>
@@ -166,7 +174,7 @@ const DisplayPromotion = () => {
               animation="shift-away"
               theme="danger"
             >
-              <button className="action-btn" type="button">
+              <button className="action-btn" type="button"  onClick={() => deleteHandler(row)}>
                 <Icon icon="heroicons:trash" />
               </button>
             </Tooltip>
@@ -175,6 +183,9 @@ const DisplayPromotion = () => {
       },
     },
   ];
+  useEffect(() => {
+    dispatch(fetchPromotions());
+  }, [dispatch]);
 
   function formatDateWithoutTime(dateString) {
     const parsedDate = new Date(dateString);
@@ -197,11 +208,9 @@ const DisplayPromotion = () => {
       };
     });
   }, [promotions]);
-  console.log(data)
+  // console.log(data)
 
-  useEffect(() => {
-    dispatch(fetchPromotions());
-  }, [dispatch]);
+
 
   const tableInstance = useTable(
     {
@@ -322,13 +331,12 @@ const onSubmit = (data) => {
           <div className="md:flex md:space-x-3 items-center flex-none rtl:space-x-reverse">
             <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
             <Button
-            icon="heroicons-outline:plus"
+            icon="heroicons-outline:plus" 
             text="Add Promotion"
             className="btn-dark dark:bg-slate-800  h-min text-sm font-normal"
             iconClass=" text-lg"
             onClick={handleModalOpen}
           />
-        
           </div>
         </div>
         <div className="overflow-x-auto -mx-6">
@@ -469,6 +477,78 @@ const onSubmit = (data) => {
           </ul>
         </div>
       </Card>
+      <Modal
+        activeModal={isModalOpen}
+        onClose={handleModalClose}
+        title="Add Promotion"
+        // Other props you want to pass to the Modal component
+      >
+       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <Textinput
+            name="title"
+            label="Promotion Name"
+            placeholder="Promotion Name"
+            register={register}
+            error={errors.title}
+          />
+          <FormGroup label="Date Dube" id="date-dube" error={errors.date_dube}>
+            <Controller
+              name="date_dube"
+              control={control}
+              render={({ field }) => (
+                <Flatpickr
+                  className="form-control py-2"
+                  id="date_dube"
+                  placeholder="yyyy, dd M"
+                  value={startDate} // Make sure you define startDate in your component state
+                  onChange={(date) => {
+                    field.onChange(date);
+                  }}
+                  options={{
+                    altInput: true,
+                    altFormat: "F j, Y",
+                    dateFormat: "Y-m-d",
+                  }}
+                />
+              )}
+            />
+          </FormGroup>
+          <FormGroup label="Date Fin" id="date-fin" error={errors.date_fin}>
+            <Controller
+              name="date_fin"
+              control={control}
+              render={({ field }) => (
+                <Flatpickr
+                  className="form-control py-2"
+                  id="date_fin"
+                  placeholder="yyyy, dd M"
+                  value={endDate} // Make sure you define endDate in your component state
+                  onChange={(date) => {
+                    field.onChange(date);
+                  }}
+                  options={{
+                    altInput: true,
+                    altFormat: "F j, Y",
+                    dateFormat: "Y-m-d",
+                  }}
+                />
+              )}
+            />
+          </FormGroup>
+          <Textinput
+            name="status"
+            label="Status"
+            placeholder="Status"
+            register={register}
+            error={errors.title}
+          />
+
+          <div className="ltr:text-right rtl:text-left">
+            <button className="btn btn-dark text-center">Add</button>
+          </div>
+        </form>
+
+      </Modal>
       <Modal
         activeModal={isModalOpen}
         onClose={handleModalClose}

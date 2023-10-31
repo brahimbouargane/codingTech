@@ -3,6 +3,7 @@ import { advancedTable } from "../../constant/table-data";
 import Card from "@/components/ui/Card";
 import Icon from "@/components/ui/Icon";
 import Dropdown from "@/components/ui/Dropdown";
+import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 import Tooltip from "@/components/ui/Tooltip";
 
@@ -256,7 +257,15 @@ const DisplayFormers = () => {
   } = tableInstance;
 
   const { globalFilter, pageIndex, pageSize } = state;
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const handleModalOpen = () => {
+    setIsModalOpen(true);
+  }
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  }
 
   return (
     <>
@@ -282,9 +291,7 @@ const DisplayFormers = () => {
               text="Add Former"
               className=" btn-dark font-normal btn-sm "
               iconClass="text-lg"
-              onClick={() => {
-                navigate("/invoice-add");
-              }}
+              onClick={handleModalOpen}
             />
           </div>
         </div>
@@ -426,6 +433,21 @@ const DisplayFormers = () => {
           </ul>
         </div>
       </Card>
+      <Modal
+        activeModal={isModalOpen}
+        onClose={handleModalClose}
+        title="Add Former"
+        // Other props you want to pass to the Modal component
+      >
+       <form className="space-y-4">
+         
+
+          <div className="ltr:text-right rtl:text-left">
+            <button className="btn btn-dark text-center">Add</button>
+          </div>
+        </form>
+
+      </Modal>
     </>
   );
 };

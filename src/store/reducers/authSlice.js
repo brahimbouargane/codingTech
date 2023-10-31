@@ -4,18 +4,6 @@ import authApiSlice from "../services/authApiSlice";
 
 const user = JSON.parse(localStorage.getItem("user"));
 
-
-// export const loginUser = createAsyncThunk(
-//   "login",
-//   async ({ username, password }, thunkAPI) => {
-//     try {
-//       const data = await authApiSlice.login(username, password);
-//       return { user: data };
-//     } catch (error) {
-//       return handleError(thunkAPI, error);
-//     }
-//   }
-// );
 export const login = createAsyncThunk('login', async ({ username, password }, thunkAPI) => {
   try {
       const data = await authApiSlice.login(username, password);

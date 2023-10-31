@@ -2,10 +2,10 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 const initialState = { records: [], loading: false, error: null, record: null };
 // const API = "http://localhost:7777/";
-const API = "http://192.168.11.116:7777/";
+const API = "http://192.168.11.137:7777/";
 const token = localStorage.getItem('jwt');
 
-export const fetchPromotions = createAsyncThunk('promotions/fetchPromotions', async (_, thunkAPI) => {
+export const fetchDevelopers = createAsyncThunk('developers/fetchDevelopers', async (_, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
     try {
         const res = await fetch(`${API}developers`, {
@@ -23,12 +23,12 @@ export const fetchPromotions = createAsyncThunk('promotions/fetchPromotions', as
     }
 });
 
-export const fetchPromotion = createAsyncThunk('promotions/fetchPromotion', async (id, thunkAPI) => {
+export const fetchDeveloper = createAsyncThunk('developers/fetchDeveloper', async (id, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
     try {
-        const res = await fetch(`${API}promotions/${id}`);
+        const res = await fetch(`${API}developers/${id}`);
         if (!res.ok) {
-            throw new Error('Failed to fetch promotion');
+            throw new Error('Failed to fetch developer');
         }
         const data = await res.json();
         return data;
@@ -37,15 +37,15 @@ export const fetchPromotion = createAsyncThunk('promotions/fetchPromotion', asyn
     }
 });
 
-export const deletePromotion = createAsyncThunk('promotions/deletePromotions', async (id, thunkAPI) => {
+export const deleteDeveloper = createAsyncThunk('developers/deleteDeveloper', async (id, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
     try {
-        const res = await fetch(`${API}promotions/${id}`, {
+        const res = await fetch(`${API}developers/${id}`, {
             method: 'DELETE',
             // headers: { Authorization: `Bearer ${token}` }
         });
         if (!res.ok) {
-            throw new Error('Failed to delete promotion');
+            throw new Error('Failed to delete developer');
         }
         return id;
     } catch (error) {
@@ -53,10 +53,10 @@ export const deletePromotion = createAsyncThunk('promotions/deletePromotions', a
     }
 });
 
-export const insertPromotion = createAsyncThunk('promotions/insertPromotion', async (item, thunkAPI) => {
+export const insertDeveloper = createAsyncThunk('developers/insertDeveloper', async (item, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
     try {
-        const res = await fetch(`${API}promotions/add`, {
+        const res = await fetch(`${API}developers/add`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ export const insertPromotion = createAsyncThunk('promotions/insertPromotion', as
             body: JSON.stringify(item)
         });
         if (!res.ok) {
-            throw new Error('Failed to insert promotion');
+            throw new Error('Failed to insert developer');
         }
         const data = await res.json();
         return data;
@@ -74,10 +74,10 @@ export const insertPromotion = createAsyncThunk('promotions/insertPromotion', as
     }
 });
 
-export const editPromotion = createAsyncThunk('promotions/editPromotions', async (item, thunkAPI) => {
+export const editDeveloper = createAsyncThunk('developers/editDeveloper', async (item, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
     try {
-        const res = await fetch(`${API}promotions/${item.id}`, {
+        const res = await fetch(`${API}developers/${item.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ export const editPromotion = createAsyncThunk('promotions/editPromotions', async
             })
         });
         if (!res.ok) {
-            throw new Error('Failed to edit promotion');
+            throw new Error('Failed to edit developer');
         }
         const data = await res.json();
         return data;
@@ -111,68 +111,68 @@ const developersSlice = createSlice({
 
     extraReducers: {
         // get one promotion
-        [fetchPromotion.pending]: (state) => {
+        [fetchDeveloper.pending]: (state) => {
             state.loading = true;
             state.error = null;
         },
-        [fetchPromotion.fulfilled]: (state, action) => {
+        [fetchDeveloper.fulfilled]: (state, action) => {
             state.loading = false;
             state.record = action.payload;
         },
-        [fetchPromotion.rejected]: (state, action) => {
+        [fetchDeveloper.rejected]: (state, action) => {
             state.loading = false;
             state.error = action.payload;
         },
         // fetch promotions
-        [fetchPromotions.pending]: (state) => {
+        [fetchDevelopers.pending]: (state) => {
             state.loading = true;
             state.error = null;
         },
-        [fetchPromotions.fulfilled]: (state, action) => {
+        [fetchDevelopers.fulfilled]: (state, action) => {
             state.loading = false;
             state.records = action.payload;
         },
-        [fetchPromotions.rejected]: (state, action) => {
+        [fetchDevelopers.rejected]: (state, action) => {
             state.loading = false;
             state.error = action.payload;
         },
         // create promotion
-        [insertPromotion.pending]: (state) => {
+        [insertDeveloper.pending]: (state) => {
             state.loading = true;
             state.error = null;
         },
-        [insertPromotion.fulfilled]: (state, action) => {
+        [insertDeveloper.fulfilled]: (state, action) => {
             state.loading = false;
             state.records.push(action.payload);
         },
-        [insertPromotion.rejected]: (state, action) => {
+        [insertDeveloper.rejected]: (state, action) => {
             state.loading = false;
             state.error = action.payload;
         },
         // delete promotion
-        [deletePromotion.pending]: (state) => {
+        [deleteDeveloper.pending]: (state) => {
             state.loading = true;
             state.error = null;
         },
-        [deletePromotion.fulfilled]: (state, action) => {
+        [deleteDeveloper.fulfilled]: (state, action) => {
             state.loading = false;
             state.records = state.records.filter((el) => el.id !== action.payload);
         },
-        [deletePromotion.rejected]: (state, action) => {
+        [deleteDeveloper.rejected]: (state, action) => {
             state.loading = false;
             state.error = action.payload;
         },
 
         // edit promotion
-        [editPromotion.pending]: (state) => {
+        [editDeveloper.pending]: (state) => {
             state.loading = true;
             state.error = null;
         },
-        [editPromotion.fulfilled]: (state, action) => {
+        [editDeveloper.fulfilled]: (state, action) => {
             state.loading = false;
             state.record = action.payload;
         },
-        [editPromotion.rejected]: (state, action) => {
+        [editDeveloper.rejected]: (state, action) => {
             state.loading = false;
             state.error = action.payload;
         }

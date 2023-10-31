@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 const initialState = { records: [], loading: false, error: null, record: null };
 // const API = "http://localhost:7777/";
-const API = "http://192.168.11.116:7777/";
+const API = "http://192.168.11.137:7777/";
 const token = localStorage.getItem('jwt');
 
 export const fetchPromotions = createAsyncThunk('promotions/fetchPromotions', async (_, thunkAPI) => {
@@ -83,12 +83,12 @@ export const editPromotion = createAsyncThunk('promotions/editPromotions', async
                 'Content-Type': 'application/json',
                 // Authorization: `Bearer ${token}`
             },
-            body: JSON.stringify({
-                email: item.email,
-                name: item.name,
-                telephone: item.telephone,
-                role_id: item.role_id
-            })
+            // body: JSON.stringify({
+            //     email: item.email,
+            //     name: item.name,
+            //     telephone: item.telephone,
+            //     role_id: item.role_id
+            // })
         });
         if (!res.ok) {
             throw new Error('Failed to edit promotion');
