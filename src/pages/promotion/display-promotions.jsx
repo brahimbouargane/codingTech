@@ -13,7 +13,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import FormGroup from "@/components/ui/FormGroup";
 
-
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchPromotions,
@@ -62,9 +61,12 @@ const DisplayPromotion = () => {
   const [formersData, setFormersData] = useState([]);
   const [deletedItem, setDeletedItem] = useState();
   const promotions = useSelector((state) => state.promotion.records);
-  const deleteRecord = useCallback((id) => dispatch(deletePromotion(id)), [dispatch]);
+  const deleteRecord = useCallback(
+    (id) => dispatch(deletePromotion(id)),
+    [dispatch]
+  );
   const deleteHandler = (item) => {
-    deleteRecord(item.row.original.id)
+    deleteRecord(item.row.original.id);
     dispatch(fetchPromotions());
   };
 
@@ -163,7 +165,11 @@ const DisplayPromotion = () => {
               arrow
               animation="shift-away"
             >
-              <button className="action-btn" type="button" onClick={handleModalOpen}>
+              <button
+                className="action-btn"
+                type="button"
+                onClick={handleModalOpen}
+              >
                 <Icon icon="heroicons:pencil-square" />
               </button>
             </Tooltip>
@@ -174,7 +180,11 @@ const DisplayPromotion = () => {
               animation="shift-away"
               theme="danger"
             >
-              <button className="action-btn" type="button"  onClick={() => deleteHandler(row)}>
+              <button
+                className="action-btn"
+                type="button"
+                onClick={() => deleteHandler(row)}
+              >
                 <Icon icon="heroicons:trash" />
               </button>
             </Tooltip>
@@ -189,11 +199,11 @@ const DisplayPromotion = () => {
 
   function formatDateWithoutTime(dateString) {
     const parsedDate = new Date(dateString);
-  
+
     const year = parsedDate.getUTCFullYear();
-    const month = String(parsedDate.getUTCMonth() + 1).padStart(2, '0'); // Month is 0-indexed, so add 1
-    const day = String(parsedDate.getUTCDate()).padStart(2, '0');
-  
+    const month = String(parsedDate.getUTCMonth() + 1).padStart(2, "0"); // Month is 0-indexed, so add 1
+    const day = String(parsedDate.getUTCDate()).padStart(2, "0");
+
     return `${year}-${month}-${day}`;
   }
 
@@ -209,8 +219,6 @@ const DisplayPromotion = () => {
     });
   }, [promotions]);
   // console.log(data)
-
-
 
   const tableInstance = useTable(
     {
@@ -262,7 +270,6 @@ const DisplayPromotion = () => {
   } = tableInstance;
 
   const { globalFilter, pageIndex, pageSize } = state;
- 
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
@@ -270,58 +277,57 @@ const DisplayPromotion = () => {
 
   const handleModalOpen = () => {
     setIsModalOpen(true);
-  }
+  };
 
   const handleModalClose = () => {
     setIsModalOpen(false);
-  }
+  };
 
   const FormValidationSchema = yup
-  .object({
-    title: yup.string().required("Title is required"),
-    status: yup.mixed().required("status is required"),
-    date_dube: yup
-      .date()
-      .required("Start date is required")
-      .min(new Date(), "Start date must be greater than today"),
-    date_fin: yup
-      .date()
-      .required("End date is required")
-      .min(new Date(), "End date must be greater than today"),
-  })
-  .required();
+    .object({
+      title: yup.string().required("Title is required"),
+      status: yup.mixed().required("status is required"),
+      date_dube: yup
+        .date()
+        .required("Start date is required")
+        .min(new Date(), "Start date must be greater than today"),
+      date_fin: yup
+        .date()
+        .required("End date is required")
+        .min(new Date(), "End date must be greater than today"),
+    })
+    .required();
 
-const {
-  register,
-  control,
-  reset,
-  formState: { errors },
-  handleSubmit,
-} = useForm({
-  resolver: yupResolver(FormValidationSchema),
-  mode: "all",
-});
+  const {
+    register,
+    control,
+    reset,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
+    resolver: yupResolver(FormValidationSchema),
+    mode: "all",
+  });
 
-const onSubmit = (data) => {
-  const promotion = {
-    nom: data.title,
-    date_dube:  startDate.toISOString().split("T")[0],
-    date_fin: endDate.toISOString().split("T")[0],
-    status: data.status
-  };
- 
- 
-  dispatch(insertPromotion(promotion))
-    .unwrap()
-    .then(() => {
+  const onSubmit = (data) => {
+    const promotion = {
+      nom: data.title,
+      date_dube: startDate.toISOString().split("T")[0],
+      date_fin: endDate.toISOString().split("T")[0],
+      status: data.status,
+    };
+
+    dispatch(insertPromotion(promotion))
+      .unwrap()
+      .then(() => {
         dispatch(fetchPromotions());
         reset();
         handleModalClose();
-    })
-    .catch((err) => {
+      })
+      .catch((err) => {
         console.log(err);
-    });
-};
+      });
+  };
 
   return (
     <>
@@ -331,12 +337,12 @@ const onSubmit = (data) => {
           <div className="md:flex md:space-x-3 items-center flex-none rtl:space-x-reverse">
             <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
             <Button
-            icon="heroicons-outline:plus" 
-            text="Add Promotion"
-            className="btn-dark dark:bg-slate-800  h-min text-sm font-normal"
-            iconClass=" text-lg"
-            onClick={handleModalOpen}
-          />
+              icon="heroicons-outline:plus"
+              text="Add Promotion"
+              className="btn-dark dark:bg-slate-800  h-min text-sm font-normal"
+              iconClass=" text-lg"
+              onClick={handleModalOpen}
+            />
           </div>
         </div>
         <div className="overflow-x-auto -mx-6">
@@ -483,7 +489,7 @@ const onSubmit = (data) => {
         title="Add Promotion"
         // Other props you want to pass to the Modal component
       >
-       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={onSubmit} className="space-y-4">
           <Textinput
             name="title"
             label="Promotion Name"
@@ -547,7 +553,6 @@ const onSubmit = (data) => {
             <button className="btn btn-dark text-center">Add</button>
           </div>
         </form>
-
       </Modal>
       <Modal
         activeModal={isModalOpen}
@@ -555,7 +560,7 @@ const onSubmit = (data) => {
         title="Add Promotion"
         // Other props you want to pass to the Modal component
       >
-       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Textinput
             name="title"
             label="Promotion Name"
@@ -619,7 +624,6 @@ const onSubmit = (data) => {
             <button className="btn btn-dark text-center">Add</button>
           </div>
         </form>
-
       </Modal>
     </>
   );

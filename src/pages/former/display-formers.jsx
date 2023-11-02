@@ -6,6 +6,12 @@ import Dropdown from "@/components/ui/Dropdown";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 import Tooltip from "@/components/ui/Tooltip";
+import Textinput from "@/components/ui/Textinput";
+import Flatpickr from "react-flatpickr";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import FormGroup from "@/components/ui/FormGroup";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -16,7 +22,7 @@ import {
   editFormer,
 } from "../../store/reducers/formerSlice";
 
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   useTable,
   useRowSelect,
@@ -151,9 +157,11 @@ const DisplayFormers = () => {
               arrow
               animation="shift-away"
             >
-              <button className="action-btn" type="button">
-                <Icon icon="heroicons:eye" />
-              </button>
+              <Link to={`/about-former/${row.row.original.id}`}>
+                <button className="action-btn" type="button">
+                  <Icon icon="heroicons:eye" />
+                </button>
+              </Link>
             </Tooltip>
             <Tooltip
               content="Edit"
@@ -184,11 +192,11 @@ const DisplayFormers = () => {
 
   function formatDateWithoutTime(dateString) {
     const parsedDate = new Date(dateString);
-  
+
     const year = parsedDate.getUTCFullYear();
-    const month = String(parsedDate.getUTCMonth() + 1).padStart(2, '0'); // Month is 0-indexed, so add 1
-    const day = String(parsedDate.getUTCDate()).padStart(2, '0');
-  
+    const month = String(parsedDate.getUTCMonth() + 1).padStart(2, "0"); // Month is 0-indexed, so add 1
+    const day = String(parsedDate.getUTCDate()).padStart(2, "0");
+
     return `${year}-${month}-${day}`;
   }
 
@@ -198,10 +206,12 @@ const DisplayFormers = () => {
     return formers.map((former) => {
       return {
         ...former, // Copy all properties from the original former object
-        dateNaissance: formatDateWithoutTime(former.dateNaissance), // Format the date
+        dateNaissance: formatDateWithoutTime(former.dateNaissance), // Format the date dateNaissance
       };
     });
   }, [formers]);
+
+  console.log(data);
 
   useEffect(() => {
     dispatch(fetchFormers());
@@ -258,14 +268,64 @@ const DisplayFormers = () => {
 
   const { globalFilter, pageIndex, pageSize } = state;
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const date_naissance = "2000-01-01";
 
   const handleModalOpen = () => {
     setIsModalOpen(true);
-  }
+  };
 
   const handleModalClose = () => {
     setIsModalOpen(false);
-  }
+  };
+
+  const FormValidationSchema = yup.object({
+    nom: yup.string().required("Nom is required"),
+    prenom: yup.string().required("Prenom is required"),
+    email: yup
+      .string()
+      .email("Invalid email format")
+      .required("Email is required"),
+    password: yup.string().required("Password is required"),
+    dateNaissance: yup
+      .date()
+      .required("date naissance is required")
+      .min(date_naissance, "date naissance be greater than 20 ANS"),
+    telephone: yup.string().required("Telephone is required"),
+  });
+
+  const {
+    register,
+    control,
+    reset,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
+    resolver: yupResolver(FormValidationSchema),
+    mode: "all",
+  });
+
+  const onSubmit = (data) => {
+    //console.log(data.nom);
+    const promotion = {
+      nom: data.nom,
+      prenom: data.prenom,
+      username: data.email,
+      password: data.password,
+      dateNaissance: data.dateNaissance,
+      telephone: data.telephone,
+    };
+
+    dispatch(insertFormer(promotion))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchFormers());
+        reset();
+        handleModalClose();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <>
@@ -439,14 +499,76 @@ const DisplayFormers = () => {
         title="Add Former"
         // Other props you want to pass to the Modal component
       >
-       <form className="space-y-4">
-         
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <Textinput
+            name="nom"
+            label="nom"
+            placeholder="nom"
+            register={register}
+            error={errors.nom}
+          />
+          <Textinput
+            name="prenom"
+            label="prenom"
+            placeholder="prenom"
+            register={register}
+            error={errors.prenom}
+          />
+          <Textinput
+            name="email"
+            label="Email"
+            placeholder="Email"
+            register={register}
+            error={errors.email}
+          />
+
+          <FormGroup
+            label="DATE NAISSANCE"
+            id="dateNaissance"
+            error={errors.dateNaissance}
+          >
+            <Controller
+              name="dateNaissance"
+              control={control}
+              render={({ field }) => (
+                <Flatpickr
+                  className="form-control py-2"
+                  id="dateNaissance"
+                  placeholder="yyyy, dd M"
+                  value={date_naissance} // Make sure you define date_naissance in your component state
+                  onChange={(date) => {
+                    field.onChange(date);
+                  }}
+                  options={{
+                    altInput: true,
+                    altFormat: "F j, Y",
+                    dateFormat: "Y-m-d",
+                  }}
+                />
+              )}
+            />
+          </FormGroup>
+
+          <Textinput
+            name="password"
+            label="password"
+            placeholder="password"
+            type="password"
+            register={register}
+            error={errors.password}
+          />
+          <Textinput
+            name="telephone"
+            label="telephone"
+            placeholder="telephone"
+            register={register}
+            error={errors.telephone}
+          />
 
           <div className="ltr:text-right rtl:text-left">
             <button className="btn btn-dark text-center">Add</button>
           </div>
         </form>
-
       </Modal>
     </>
   );

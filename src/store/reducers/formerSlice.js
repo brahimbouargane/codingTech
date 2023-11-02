@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-const initialState = { records: [], loading: false, error: null, record: null };
-// const API = "http://localhost:7777/";
-const API = "http://192.168.11.137:7777/";
+const initialState = { records: [], loading: false, error: null, record: null,former:{} };
+const API = "http://localhost:7777/";
+//const API = "http://192.168.11.137:7777/";
 const token = localStorage.getItem('jwt');
 
 export const fetchFormers = createAsyncThunk('formers/fetchFormers', async (_, thunkAPI) => {
@@ -31,6 +31,7 @@ export const fetchFormer = createAsyncThunk('formers/fetchFormer', async (id, th
             throw new Error('Failed to fetch former');
         }
         const data = await res.json();
+        console.log("ok==", data);
         return data;
     } catch (error) {
         return rejectWithValue(error.message);
@@ -118,6 +119,7 @@ const formerSlice = createSlice({
         [fetchFormer.fulfilled]: (state, action) => {
             state.loading = false;
             state.record = action.payload;
+            state.former = action.payload;
         },
         [fetchFormer.rejected]: (state, action) => {
             state.loading = false;

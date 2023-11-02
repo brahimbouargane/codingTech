@@ -52,13 +52,13 @@ function App() {
           <Route path="about-promotion" element={<AboutPromotion />} />
           <Route path="add-developer" element={<AddDeveloper />} />
           <Route path="display-developers" element={<DisplayDevelopers />} />
-          <Route path="about-developer" element={<AboutDeveloper />} />
+          <Route path="about-developer/:id" element={<AboutDeveloper />} />
           <Route path="add-course" element={<AddCourse />} />
           {/* <Route path="display-courses" element={<DisplayCourses />} /> */}
           <Route path="about-course" element={<AboutCourse />} />
           <Route path="add-former" element={<AddFormer />} />
           <Route path="display-formers" element={<DisplayFormers />} />
-          <Route path="about-former" element={<AboutFormer />} />
+          <Route path="about-former/:id" element={<AboutFormer />} />
           <Route path="add-recruiter" element={<AddRecruiter />} />
           <Route path="display-recruiters" element={<DisplayRecruiters />} />
           <Route path="about-recruiter" element={<AboutRecruiter />} />
