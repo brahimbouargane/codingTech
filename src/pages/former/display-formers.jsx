@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { advancedTable } from "../../constant/table-data";
 import Card from "@/components/ui/Card";
 import Icon from "@/components/ui/Icon";
@@ -59,6 +59,17 @@ const DisplayFormers = () => {
   const dispatch = useDispatch();
   const [formersData, setFormersData] = useState([]);
   const formers = useSelector((state) => state.former.records);
+  const [dateNaissance, setDateNaissance] = useState(null);
+
+  const deleteRecord = useCallback(
+    (id) => dispatch(deleteFormer(id)),
+    [dispatch]
+  );
+
+  const deleteHandler = (item) => {
+    deleteRecord(item.row.original.id);
+    dispatch(fetchFormers());
+  };
 
   const actions = [
     {
@@ -180,7 +191,11 @@ const DisplayFormers = () => {
               animation="shift-away"
               theme="danger"
             >
-              <button className="action-btn" type="button">
+              <button
+                className="action-btn"
+                type="button"
+                onClick={() => deleteHandler(row)}
+              >
                 <Icon icon="heroicons:trash" />
               </button>
             </Tooltip>
@@ -211,11 +226,9 @@ const DisplayFormers = () => {
     });
   }, [formers]);
 
-  console.log(data);
-
   useEffect(() => {
     dispatch(fetchFormers());
-  }, [dispatch]);
+  }, [data]);
 
   const tableInstance = useTable(
     {
@@ -268,7 +281,6 @@ const DisplayFormers = () => {
 
   const { globalFilter, pageIndex, pageSize } = state;
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const date_naissance = "2000-01-01";
 
   const handleModalOpen = () => {
     setIsModalOpen(true);
@@ -286,10 +298,7 @@ const DisplayFormers = () => {
       .email("Invalid email format")
       .required("Email is required"),
     password: yup.string().required("Password is required"),
-    dateNaissance: yup
-      .date()
-      .required("date naissance is required")
-      .min(date_naissance, "date naissance be greater than 20 ANS"),
+    dateNaissance: yup.date().required("date naissance is required"),
     telephone: yup.string().required("Telephone is required"),
   });
 
@@ -535,9 +544,11 @@ const DisplayFormers = () => {
                   className="form-control py-2"
                   id="dateNaissance"
                   placeholder="yyyy, dd M"
-                  value={date_naissance} // Make sure you define date_naissance in your component state
-                  onChange={(date) => {
-                    field.onChange(date);
+                  value={dateNaissance} // Use dateNaissance as the value
+                  onChange={(selectedDates) => {
+                    const selectedDate = selectedDates[0]; // Assuming you want to select a single date
+                    field.onChange(selectedDate); // Update the form field value
+                    setDateNaissance(selectedDate); // Update the dateNaissance state
                   }}
                   options={{
                     altInput: true,

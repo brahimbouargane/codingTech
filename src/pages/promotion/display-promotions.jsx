@@ -58,8 +58,6 @@ const IndeterminateCheckbox = React.forwardRef(
 const DisplayPromotion = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [formersData, setFormersData] = useState([]);
-  const [deletedItem, setDeletedItem] = useState();
   const promotions = useSelector((state) => state.promotion.records);
   const deleteRecord = useCallback(
     (id) => dispatch(deletePromotion(id)),

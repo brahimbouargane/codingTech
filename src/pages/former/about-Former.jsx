@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Icon from "@/components/ui/Icon";
 import Card from "@/components/ui/Card";
@@ -9,11 +9,21 @@ const AboutFormer = () => {
   const former = useSelector((state) => state.former.former);
   const dispatch = useDispatch();
   const { id } = useParams();
+  const [formattedDate, setFormattedDate] = useState("");
 
   useEffect(() => {
     dispatch(fetchFormer(id));
     console.log(former); // Use dispatch directly
   }, []);
+
+  useEffect(() => {
+    // Format the date when the former data is available
+    if (former.dateNaissance) {
+      const date = new Date(former.dateNaissance);
+      const formattedDate = date.toISOString().split("T")[0]; // Get the yyyy-MM-dd part
+      setFormattedDate(formattedDate);
+    }
+  }, [former.dateNaissance]);
 
   return (
     <div>
@@ -122,11 +132,10 @@ const AboutFormer = () => {
                     </div>
                     <div className="flex-1">
                       <div className="uppercase text-xs text-slate-500 dark:text-slate-300 mb-1 leading-[12px]">
-                        LOCATION
+                        Date Naissance
                       </div>
                       <div className="text-base text-slate-600 dark:text-slate-50">
-                        Home# 320/N, Road# 71/B, Mohakhali, Dhaka-1207,
-                        Bangladesh
+                      {formattedDate}
                       </div>
                     </div>
                   </li>
