@@ -3,7 +3,7 @@ import Icon from "@/components/ui/Icon";
 
 const statistics = [
   {
-    title: "Total Task",
+    title: "Total Skills",
     count: "64",
     bg: "bg-info-500",
     text: "text-info-500",
@@ -11,10 +11,10 @@ const statistics = [
     icon: "heroicons-outline:menu-alt-1",
   },
   {
-    title: "Completed ",
+    title: "Total Project",
     count: "45",
 
-    bg: "bg-warning-500",
+    bg: "bg-info-500",
     text: "text-warning-500",
     percent: "8.67%",
     icon: "heroicons-outline:chart-pie",
@@ -22,15 +22,15 @@ const statistics = [
   {
     title: "Hours",
     count: "190",
-    bg: "bg-primary-500",
+    bg: "bg-info-500",
     text: "text-primary-500",
     percent: "1.67%  ",
     icon: "heroicons-outline:clock",
   },
   {
-    title: "Spendings",
-    count: "$3,564",
-    bg: "bg-success-500",
+    title: "années d'expérience.",
+    count: "5",
+    bg: "bg-info-500",
     text: "text-success-500",
     percent: "11.67%  ",
     icon: "heroicons-outline:calculator",

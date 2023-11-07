@@ -4,6 +4,7 @@ import useSkin from "@/hooks/useSkin";
 const Card = ({
   children,
   title,
+  icon,
   subtitle,
   headerslot,
   className = "custom-class",
@@ -28,7 +29,17 @@ const Card = ({
       {(title || subtitle) && (
         <header className={`card-header ${noborder ? "no-border" : ""}`}>
           <div>
-            {title && <div className={`card-title ${titleClass}`}>{title}</div>}
+            {title && (
+              <div
+                style={{ color: "#3F5EDF" }}
+                className={`card-title ${titleClass}`}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <span>{title}</span>
+                  <span style={{ paddingLeft: "15px" }}>{icon}</span>
+                </div>
+              </div>
+            )}
             {subtitle && <div className="card-subtitle">{subtitle}</div>}
           </div>
           {headerslot && <div className="card-header-slot">{headerslot}</div>}

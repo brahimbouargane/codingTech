@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { advancedTable } from "../../constant/table-data";
 import Card from "@/components/ui/Card";
 import Icon from "@/components/ui/Icon";
@@ -16,7 +16,7 @@ import {
   editDeveloper,
 } from "../../store/reducers/developerSlice";
 
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   useTable,
   useRowSelect,
@@ -25,6 +25,21 @@ import {
   usePagination,
 } from "react-table";
 import GlobalFilter from "@/util/GlobalFilter";
+
+import Textinput from "@/components/ui/Textinput";
+import Flatpickr from "react-flatpickr";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import FormGroup from "@/components/ui/FormGroup";
+
+import {
+  fetchFormers,
+  fetchFormer,
+  deleteFormer,
+  insertFormer,
+  editFormer,
+} from "../../store/reducers/formerSlice";
 
 const IndeterminateCheckbox = React.forwardRef(
   ({ indeterminate, ...rest }, ref) => {
@@ -53,6 +68,20 @@ const DisplayDevelopers = () => {
   const dispatch = useDispatch();
   const [formersData, setFormersData] = useState([]);
   const developers = useSelector((state) => state.developer.records);
+
+  const formers = useSelector((state) => state.former.records);
+  const [dateNaissance, setDateNaissance] = useState(null);
+
+  const deleteRecord = useCallback(
+    (id) => dispatch(deleteDeveloper(id)),
+    [dispatch]
+  );
+
+  const deleteHandler = (item) => {
+    deleteRecord(item.row.original.id);
+    dispatch(fetchDevelopers());
+  };
+
   const actions = [
     {
       name: "send",
@@ -93,7 +122,7 @@ const DisplayDevelopers = () => {
     },
     {
       Header: "image",
-      accessor: "image",
+      accessor: "imagePublicId",
       Cell: (row) => {
         return (
           <div>
@@ -150,9 +179,11 @@ const DisplayDevelopers = () => {
               arrow
               animation="shift-away"
             >
-              <button className="action-btn" type="button">
-                <Icon icon="heroicons:eye" />
-              </button>
+              <Link to={`/about-developer/${row.row.original.id}`}>
+                <button className="action-btn" type="button">
+                  <Icon icon="heroicons:eye" />
+                </button>
+              </Link>
             </Tooltip>
             <Tooltip
               content="Edit"
@@ -171,7 +202,11 @@ const DisplayDevelopers = () => {
               animation="shift-away"
               theme="danger"
             >
-              <button className="action-btn" type="button">
+              <button
+                className="action-btn"
+                type="button"
+                onClick={() => deleteHandler(row)}
+              >
                 <Icon icon="heroicons:trash" />
               </button>
             </Tooltip>
@@ -258,12 +293,57 @@ const DisplayDevelopers = () => {
 
   const handleModalOpen = () => {
     setIsModalOpen(true);
-  }
+  };
 
   const handleModalClose = () => {
     setIsModalOpen(false);
-  }
+  };
 
+  const FormValidationSchema = yup.object({
+    nom: yup.string().required("Nom is required"),
+    prenom: yup.string().required("Prenom is required"),
+    email: yup
+      .string()
+      .email("Invalid email format")
+      .required("Email is required"),
+    password: yup.string().required("Password is required"),
+    dateNaissance: yup.date().required("date naissance is required"),
+    telephone: yup.string().required("Telephone is required"),
+  });
+
+  const {
+    register,
+    control,
+    reset,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
+    resolver: yupResolver(FormValidationSchema),
+    mode: "all",
+  });
+
+  const onSubmit = (data) => {
+    //console.log(data.nom);
+    const promotion = {
+      nom: data.nom,
+      prenom: data.prenom,
+      username: data.email,
+      password: data.password,
+      dateNaissance: data.dateNaissance,
+      telephone: data.telephone,
+    };
+
+    dispatch(insertDeveloper(promotion))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchDevelopers());
+        reset();
+        handleModalClose();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <>
@@ -437,14 +517,78 @@ const DisplayDevelopers = () => {
         title="Add Developer"
         // Other props you want to pass to the Modal component
       >
-       <form className="space-y-4">
-         
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <Textinput
+            name="nom"
+            label="nom"
+            placeholder="nom"
+            register={register}
+            error={errors.nom}
+          />
+          <Textinput
+            name="prenom"
+            label="prenom"
+            placeholder="prenom"
+            register={register}
+            error={errors.prenom}
+          />
+          <Textinput
+            name="email"
+            label="Email"
+            placeholder="Email"
+            register={register}
+            error={errors.email}
+          />
+
+          <FormGroup
+            label="DATE NAISSANCE"
+            id="dateNaissance"
+            error={errors.dateNaissance}
+          >
+            <Controller
+              name="dateNaissance"
+              control={control}
+              render={({ field }) => (
+                <Flatpickr
+                  className="form-control py-2"
+                  id="dateNaissance"
+                  placeholder="yyyy, dd M"
+                  value={dateNaissance} // Use dateNaissance as the value
+                  onChange={(selectedDates) => {
+                    const selectedDate = selectedDates[0]; // Assuming you want to select a single date
+                    field.onChange(selectedDate); // Update the form field value
+                    setDateNaissance(selectedDate); // Update the dateNaissance state
+                  }}
+                  options={{
+                    altInput: true,
+                    altFormat: "F j, Y",
+                    dateFormat: "Y-m-d",
+                  }}
+                />
+              )}
+            />
+          </FormGroup>
+
+          <Textinput
+            name="password"
+            label="password"
+            placeholder="password"
+            type="password"
+            register={register}
+            error={errors.password}
+          />
+          <Textinput
+            name="telephone"
+            label="telephone"
+            placeholder="telephone"
+            register={register}
+            error={errors.telephone}
+          />
 
           <div className="ltr:text-right rtl:text-left">
             <button className="btn btn-dark text-center">Add</button>
           </div>
         </form>
-
       </Modal>
     </>
   );

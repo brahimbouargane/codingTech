@@ -31,7 +31,6 @@ export const fetchFormer = createAsyncThunk('formers/fetchFormer', async (id, th
             throw new Error('Failed to fetch former');
         }
         const data = await res.json();
-        console.log("ok==", data);
         return data;
     } catch (error) {
         return rejectWithValue(error.message);
