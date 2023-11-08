@@ -6,6 +6,7 @@ const Card = ({
   title,
   icon,
   subtitle,
+  onClick,
   headerslot,
   className = "custom-class",
   bodyClass = "p-6",
@@ -13,6 +14,8 @@ const Card = ({
   titleClass = "custom-class",
 }) => {
   const [skin] = useSkin();
+
+
 
   return (
     <div
@@ -36,7 +39,7 @@ const Card = ({
               >
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <span>{title}</span>
-                  <span style={{ paddingLeft: "15px" }}>{icon}</span>
+                  <span style={{ paddingLeft: "15px" }}> <button onClick={onClick}>{icon}</button></span>
                 </div>
               </div>
             )}

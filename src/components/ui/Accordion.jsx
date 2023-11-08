@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Icon from "@/components/ui/Icon";
 
-const Accordion = ({ items, className = "space-y-5" }) => {
+const Accordion = ({ items, className = "space-y-5",onClick }) => {
   const [activeIndex, setActiveIndex] = useState(null);
 
   const toggleAccordion = (index) => {
@@ -16,7 +16,10 @@ const Accordion = ({ items, className = "space-y-5" }) => {
   return (
     <div className={className}>
       {items.map((item, index) => (
-        <div className="accordion shadow-base dark:shadow-none rounded-md" key={index}>
+        <div
+          className="accordion shadow-base dark:shadow-none rounded-md"
+          key={index}
+        >
           <div
             className={`flex justify-between cursor-pointer transition duration-150 font-medium w-full text-start text-base text-slate-600 dark:text-slate-300 px-8 py-4 ${
               activeIndex === index
@@ -25,7 +28,7 @@ const Accordion = ({ items, className = "space-y-5" }) => {
             }`}
             onClick={() => toggleAccordion(index)}
           >
-            <span>{item.title}</span>
+            <span>{item.title} </span>
             <span
               className={`text-slate-900 dark:text-white text-[22px] transition-all duration-300 h-5 ${
                 activeIndex === index ? "rotate-180 transform" : ""
@@ -45,10 +48,12 @@ const Accordion = ({ items, className = "space-y-5" }) => {
             >
               <div className="px-8 py-4">
                 <div dangerouslySetInnerHTML={{ __html: item.content }} />
-                <br></br>
-                <p>
-                  Date de début: {item.dateDebut} Date de fin: {item.datefin}
-                </p>
+                <div className="flex justify-between">
+                  <p>
+                    Date de début: {item.dateDebut} Date de fin: {item.datefin}
+                  </p>
+                  <button onClick={onClick}>ok</button>
+                </div>
               </div>
             </div>
           )}

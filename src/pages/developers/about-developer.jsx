@@ -2,11 +2,21 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Icon from "@/components/ui/Icon";
 import Card from "@/components/ui/Card";
+import Modal from "@/components/ui/Modal";
+import Textinput from "@/components/ui/Textinput";
 import Accordion from "@/components/ui/Accordion";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchDeveloper } from "../../store/reducers/developerSlice";
 import { TfiTwitter } from "react-icons/tfi";
-import { FiGithub, FiLinkedin, FiPhoneCall, FiCalendar,FiEdit } from "react-icons/fi";
+import * as yup from "yup";
+import {
+  FiGithub,
+  FiLinkedin,
+  FiPhoneCall,
+  FiCalendar,
+  FiEdit,
+} from "react-icons/fi";
 import ProgressBar from "@/components/ui/ProgressBar";
 import Button from "@/components/ui/Button";
 import GroupChart4 from "@/components/partials/widget/chart/group-chart-4";
@@ -18,12 +28,16 @@ import {
   FaLinkedinIn,
 } from "react-icons/fa6";
 import DownloadCVButton from "./DownloadCVButton";
+import { useForm } from "react-hook-form";
+import FormationOfDeveloper from "./FormationOfDeveloper";
+import ExperiencesOfDeveloper from "./ExperiencesOfDeveloper";
 
 const AboutDeveloper = () => {
   const developer = useSelector((state) => state.developer.developer);
   const dispatch = useDispatch();
   const { id } = useParams();
   const [formattedDate, setFormattedDate] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     dispatch(fetchDeveloper(id));
@@ -61,6 +75,56 @@ const AboutDeveloper = () => {
     },
   ];
 
+  const FormValidationSchema = yup.object({
+    nom: yup.string().required("Nom is required"),
+    prenom: yup.string().required("Prenom is required"),
+    email: yup
+      .string()
+      .email("Invalid email format")
+      .required("Email is required"),
+    password: yup.string().required("Password is required"),
+    dateNaissance: yup.date().required("date naissance is required"),
+    telephone: yup.string().required("Telephone is required"),
+  });
+  const handleModalOpen = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+  const {
+    register,
+    control,
+    reset,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
+    resolver: yupResolver(FormValidationSchema),
+    mode: "all",
+  });
+  const onSubmit = (data) => {
+    //console.log(data.nom);
+    const promotion = {
+      nom: data.nom,
+      prenom: data.prenom,
+      username: data.email,
+      password: data.password,
+      dateNaissance: data.dateNaissance,
+      telephone: data.telephone,
+    };
+
+    dispatch(insertDeveloper(promotion))
+      .unwrap()
+      .then(() => {
+        reset();
+        handleModalClose();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div>
       <div>
@@ -76,12 +140,13 @@ const AboutDeveloper = () => {
                       alt={developer.nom}
                       className="w-full h-full object-cover rounded-full"
                     />
-                    <Link
-                      to="#"
+                    <Button
+                      style={{ padding: "0" }} // Use "style" instead of "state" for inline styles
+                      onClick={handleModalOpen}
                       className="absolute right-2 h-8 w-8 bg-slate-50 text-slate-600 rounded-full shadow-sm flex flex-col items-center justify-center md:top-[140px] top-[100px]"
                     >
-                      <Icon icon="heroicons:pencil-square" />
-                    </Link>
+                      <FiEdit />
+                    </Button>
                   </div>
                 </div>
                 <div className="flex-1">
@@ -135,7 +200,11 @@ const AboutDeveloper = () => {
 
           <div className="grid grid-cols-12 gap-6">
             <div className="lg:col-span-4 col-span-12">
-              <Card title="Info Devloper "  icon={<FiEdit /> }>
+              <Card
+                title="Info Devloper "
+                icon={<FiEdit />}
+                onClick={handleModalOpen}
+              >
                 <ul className="list space-y-8">
                   <li className="flex space-x-3 rtl:space-x-reverse">
                     <div className="flex-none text-2xl text-slate-600 dark:text-slate-300">
@@ -234,8 +303,75 @@ const AboutDeveloper = () => {
                   </li>
                 </ul>
               </Card>
+              <Modal
+                activeModal={isModalOpen}
+                onClose={handleModalClose}
+                title="edit Info"
+                // Other props you want to pass to the Modal component
+              >
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                  <div className="grid xl:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-5">
+                    <Textinput
+                      name="nom"
+                      label="nom"
+                      placeholder="nom"
+                      register={register}
+                    />
+                    <Textinput
+                      name="prenom"
+                      label="prenom"
+                      placeholder="prenom"
+                      register={register}
+                    />
+                    <Textinput
+                      name="jobTitel"
+                      label="job titel"
+                      placeholder="job titel"
+                      register={register}
+                    />
+
+                    <Textinput
+                      name="descreption"
+                      label="descreption"
+                      placeholder="descreption"
+                      register={register}
+                    />
+                    <Textinput
+                      name="telephone"
+                      label="telephone"
+                      placeholder="telephone"
+                      register={register}
+                    />
+                    <Textinput
+                      name="twitterUrl"
+                      label="twitter url"
+                      placeholder="twitter url"
+                      register={register}
+                    />
+                    <Textinput
+                      name="githubUrl"
+                      label="github url"
+                      placeholder="github url"
+                      register={register}
+                    />
+                    <Textinput
+                      name="linkedinUrl"
+                      label="linkedin url"
+                      placeholder="linkedin url"
+                      register={register}
+                    />
+                  </div>
+                  <div className="ltr:text-right rtl:text-left">
+                    <button className="btn btn-dark text-center">edit</button>
+                  </div>
+                </form>
+              </Modal>
               <br></br>
-              <Card title="Height Examples">
+              <Card
+                title="Height Examples"
+                icon={<FiEdit />}
+                onClick={handleModalOpen}
+              >
                 <div className="space-y-4">
                   <ProgressBar
                     className="bg-info-500"
@@ -268,13 +404,9 @@ const AboutDeveloper = () => {
                 <div className="text-sm">{developer.description}</div>
               </Card>
               <br></br>
-              <Card title="DIPLÔMES ET FORMATIONS">
-                <Accordion items={items} />
-              </Card>
+              <ExperiencesOfDeveloper/>
               <br></br>
-              <Card title="EXPÉRIENCES PROFESSIONNELLES">
-                <Accordion items={items} />
-              </Card>
+              <FormationOfDeveloper/>
             </div>
           </div>
         </div>
