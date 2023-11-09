@@ -41,7 +41,8 @@ const AboutDeveloper = () => {
 
   useEffect(() => {
     dispatch(fetchDeveloper(id));
-    console.log(developer);
+    console.log(developer.experience);
+
   }, []);
   useEffect(() => {
     // Format the date when the former data is available
@@ -52,28 +53,7 @@ const AboutDeveloper = () => {
     }
   }, [developer.dateNaissance]);
 
-  const items = [
-    {
-      title: "Technicien Spécialisé en Développement Digital (FullStack)",
-      dateDebut: "2015-12-0-6",
-      datefin: "2015-12-0-6",
-      content: "OFPPT NTIC 1 Casablanca",
-    },
-    {
-      title: "Where i can learn more about using Dashcode?",
-      dateDebut: "2015-12-0-6",
-      datefin: "2015-12-0-6",
-      content:
-        "Jornalists call this critical, introductory section the  and when bridge properly executed, it's the that carries your reader from anheadine try at attention-grabbing to the body of your blog post.",
-    },
-    {
-      title: "Why Dashcode is so important?",
-      dateDebut: "2015-12-0-6",
-      datefin: "2015-12-0-6",
-      content:
-        "Jornalists call this critical, introductory section the  and when bridge properly executed, it's the that carries your reader from anheadine try at attention-grabbing to the body of your blog post.",
-    },
-  ];
+  
 
   const FormValidationSchema = yup.object({
     nom: yup.string().required("Nom is required"),
@@ -404,9 +384,10 @@ const AboutDeveloper = () => {
                 <div className="text-sm">{developer.description}</div>
               </Card>
               <br></br>
-              <ExperiencesOfDeveloper/>
+              <ExperiencesOfDeveloper idDeveloper={developer.id}/>
               <br></br>
               <FormationOfDeveloper/>
+              
             </div>
           </div>
         </div>

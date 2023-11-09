@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
 const initialState = {
   records: [],
@@ -6,6 +7,7 @@ const initialState = {
   error: null,
   record: null,
   developer: {},
+  experiences: [],
 };
 const API = "http://localhost:7777/";
 //const API = "http://192.168.11.137:7777/";
@@ -23,6 +25,7 @@ export const fetchDevelopers = createAsyncThunk(
       if (!res.ok) {
         throw new Error("Failed to fetch promotions");
       }
+
       const data = await res.json();
       return data;
     } catch (error) {
@@ -43,7 +46,6 @@ export const fetchDeveloper = createAsyncThunk(
       const data = await res.json();
       console.log(data);
       return data;
-      
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -87,6 +89,60 @@ export const insertDeveloper = createAsyncThunk(
       }
       const data = await res.json();
       return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+export const addEducation = createAsyncThunk(
+  "developers/addEducation",
+  async (item, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+    const { dateFin, dateDebut, title, developer_id } = item;
+    const data = { dateFin, dateDebut, title, developer_id };
+
+    console.log(data.title);
+    try {
+      const response = await axios.put(
+        `${API}developers/${item.developer_id}/experiences`,
+        data
+      );
+
+      if (response.status !== 200) {
+        // You can adjust the status code condition based on your API
+        throw new Error("Failed to add education");
+      }
+
+      const addedEducation = response.data;
+      return addedEducation;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+
+export const addFormation = createAsyncThunk(
+  "developers/addEducation",
+  async (item, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+    const { dateFin, dateDebut, title, developer_id } = item;
+    const data = { dateFin, dateDebut, title, developer_id };
+
+    console.log(data.title);
+    try {
+      const response = await axios.put(
+        `${API}developers/${item.developer_id}/experiences`,
+        data
+      );
+
+      if (response.status !== 200) {
+        // You can adjust the status code condition based on your API
+        throw new Error("Failed to add education");
+      }
+
+      const addedEducation = response.data;
+      return addedEducation;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -145,7 +201,6 @@ const developersSlice = createSlice({
     [fetchDeveloper.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.payload;
-      
     },
     // fetch promotions
     [fetchDevelopers.pending]: (state) => {
@@ -197,6 +252,20 @@ const developersSlice = createSlice({
       state.record = action.payload;
     },
     [editDeveloper.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+
+    [addEducation.pending]: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    [addEducation.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.developer = action.payload;
+      state.records.push(action.payload);
+    },
+    [addEducation.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },

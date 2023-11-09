@@ -37,9 +37,9 @@ const Card = ({
                 style={{ color: "#3F5EDF" }}
                 className={`card-title ${titleClass}`}
               >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <span>{title}</span>
-                  <span style={{ paddingLeft: "15px" }}> <button onClick={onClick}>{icon}</button></span>
+                <div style={{ display: "flex", alignItems: "center",justifyItems:"flex-end" }}>
+                  <div>{title}</div>
+                  <div style={{ paddingLeft: "15px" }}> <button onClick={onClick}>{icon}</button></div>
                 </div>
               </div>
             )}
