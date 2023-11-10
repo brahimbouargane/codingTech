@@ -16,10 +16,10 @@ import {
   deleteDeveloper,
   insertDeveloper,
   editDeveloper,
-  addEducation,
+  addEducation,addFormation
 } from "../../store/reducers/developerSlice";
 
-const FormationOfDeveloper = () => {
+const FormationOfDeveloper = ({ idDeveloper ,devfoemation }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [dateNaissance, setDateNaissance] = useState(null);
@@ -75,9 +75,9 @@ const FormationOfDeveloper = () => {
     mode: "all",
   });
 
-  const handellClicke = () => {
-    console.log("handellClicke");
-  };
+  if (devfoemation) {
+    console.log(devfoemation)
+  }
 
   const onSubmit = (data) => {
     //console.log(data.nom);
@@ -90,10 +90,10 @@ const FormationOfDeveloper = () => {
       developer_id: idDeveloper,
     };
 
-    dispatch(addEducation(promotion))
+    dispatch(addFormation(promotion))
       .unwrap()
       .then(() => {
-        dispatch(fetchDevelopers());
+        dispatch(fetchDeveloper());
         reset();
         handleModalClose();
       })
@@ -109,7 +109,7 @@ const FormationOfDeveloper = () => {
           icon={<MdOutlineAddCircleOutline />}
           onClick={handleModalOpen}
         >
-          <Accordion items={items} />
+          <Accordion items={devfoemation} />
         </Card>
         <Modal
           activeModal={isModalOpen}

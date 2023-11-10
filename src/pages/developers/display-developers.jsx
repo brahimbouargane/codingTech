@@ -134,6 +134,9 @@ const DisplayDevelopers = () => {
                   className="object-cover w-full h-full rounded-full"
                 />
               </span>
+              <span className="text-sm text-slate-600 dark:text-slate-300 capitalize">
+                {row?.cell?.value.name}
+              </span>
             </span>
           </div>
         );

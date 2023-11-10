@@ -27,6 +27,7 @@ export const fetchDevelopers = createAsyncThunk(
       }
 
       const data = await res.json();
+      console.log(data);
       return data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -98,10 +99,10 @@ export const addEducation = createAsyncThunk(
   "developers/addEducation",
   async (item, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
-    const { dateFin, dateDebut, title, developer_id } = item;
-    const data = { dateFin, dateDebut, title, developer_id };
+    const { dateFin, dateDebut, nomLentreprise, jobTitle, developer_id } = item;
+    const data = { dateFin, dateDebut, jobTitle, nomLentreprise, developer_id };
 
-    console.log(data.title);
+    console.log(data.nomLentreprise);
     try {
       const response = await axios.put(
         `${API}developers/${item.developer_id}/experiences`,
@@ -121,18 +122,31 @@ export const addEducation = createAsyncThunk(
   }
 );
 
-
 export const addFormation = createAsyncThunk(
-  "developers/addEducation",
+  "developers/addFormation",
   async (item, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
-    const { dateFin, dateDebut, title, developer_id } = item;
-    const data = { dateFin, dateDebut, title, developer_id };
+    const {
+      dateFin,
+      dateDebut,
+      nomEcole,
+      nomeDeplome,
+      description,
+      developer_id,
+    } = item;
+    const data = {
+      dateFin,
+      dateDebut,
+      nomEcole,
+      nomeDeplome,
+      description,
+      developer_id,
+    };
 
-    console.log(data.title);
+    console.log(data);
     try {
       const response = await axios.put(
-        `${API}developers/${item.developer_id}/experiences`,
+        `${API}developers/${item.developer_id}/education`,
         data
       );
 
@@ -155,16 +169,20 @@ export const editDeveloper = createAsyncThunk(
     const { rejectWithValue } = thunkAPI;
     try {
       const res = await fetch(`${API}developers/${item.id}`, {
-        method: "PATCH",
+        method: "put",
         headers: {
           "Content-Type": "application/json",
           // Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
-          email: item.email,
-          name: item.name,
+          nom: item.nom,
+          prenom: item.prenom,
+          jobTitle: item.jobTitle,
+          description: item.description,
+          twitterUrl: item.twitterUrl,
+          gitHubUrl: item.gitHubUrl,
+          linkedinUrl: item.linkedinUrl,
           telephone: item.telephone,
-          role_id: item.role_id,
         }),
       });
       if (!res.ok) {
@@ -266,6 +284,20 @@ const developersSlice = createSlice({
       state.records.push(action.payload);
     },
     [addEducation.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+
+    [addFormation.pending]: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    [addFormation.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.developer = action.payload;
+      state.records.push(action.payload);
+    },
+    [addFormation.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },

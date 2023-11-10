@@ -53,7 +53,8 @@ const ExperiencesOfDeveloper = ({ idDeveloper }) => {
  
 
   const FormValidationSchema = yup.object({
-    nomEcole: yup.string().required("Nom is required"),
+    nomLentreprise: yup.string().required("Nom is required"),
+    jobTitle: yup.string().required("Nom is required"),
     date_debut: yup.date().required("date naissance is required"),
     date_fin: yup.date().required("date naissance is required"),
   });
@@ -88,14 +89,15 @@ const ExperiencesOfDeveloper = ({ idDeveloper }) => {
     const promotion = {
       dateFin: data.date_debut,
       dateDebut: data.date_fin,
-      title: data.nomEcole,
+      jobTitle: data.jobTitle,
+      nomLentreprise: data.nomLentreprise,
       developer_id: idDeveloper,
     };
 
     dispatch(addEducation(promotion))
       .unwrap()
       .then(() => {
-        dispatch(fetchDevelopers());
+        dispatch(fetchDeveloper());
         reset();
         handleModalClose();
     
@@ -181,15 +183,15 @@ const ExperiencesOfDeveloper = ({ idDeveloper }) => {
               </FormGroup>
 
               <Textinput
-                name="nomEcole"
+                name="nomLentreprise"
                 label="Nom de l'entreprise"
                 placeholder="nom"
                 register={register}
               />
               <Textinput
-                name="prenom"
+                name="jobTitle"
                 label="job title"
-                placeholder="prenom"
+                placeholder="job Title"
                 register={register}
               />
             </div>

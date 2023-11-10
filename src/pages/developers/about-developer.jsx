@@ -7,7 +7,6 @@ import Textinput from "@/components/ui/Textinput";
 import Accordion from "@/components/ui/Accordion";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchDeveloper } from "../../store/reducers/developerSlice";
 import { TfiTwitter } from "react-icons/tfi";
 import * as yup from "yup";
 import {
@@ -27,10 +26,16 @@ import {
   FaRegEnvelope,
   FaLinkedinIn,
 } from "react-icons/fa6";
-import DownloadCVButton from "./DownloadCVButton";
 import { useForm } from "react-hook-form";
 import FormationOfDeveloper from "./FormationOfDeveloper";
 import ExperiencesOfDeveloper from "./ExperiencesOfDeveloper";
+import { connect } from "formik";
+import {
+  fetchDeveloper,
+  insertDeveloper,
+  editDeveloper,
+} from "../../store/reducers/developerSlice";
+import DeveloperInfo from "./DeveloperInfo";
 
 const AboutDeveloper = () => {
   const developer = useSelector((state) => state.developer.developer);
@@ -41,8 +46,7 @@ const AboutDeveloper = () => {
 
   useEffect(() => {
     dispatch(fetchDeveloper(id));
-    console.log(developer.experience);
-
+    console.log(developer);
   }, []);
   useEffect(() => {
     // Format the date when the former data is available
@@ -53,17 +57,14 @@ const AboutDeveloper = () => {
     }
   }, [developer.dateNaissance]);
 
-  
-
   const FormValidationSchema = yup.object({
     nom: yup.string().required("Nom is required"),
     prenom: yup.string().required("Prenom is required"),
-    email: yup
-      .string()
-      .email("Invalid email format")
-      .required("Email is required"),
-    password: yup.string().required("Password is required"),
-    dateNaissance: yup.date().required("date naissance is required"),
+    jobTitle: yup.string().required("Prenom is required"),
+    description: yup.string().required("Prenom is required"),
+    twitterUrl: yup.string().required("Prenom is required"),
+    gitHubUrl: yup.string().required("Prenom is required"),
+    linkedinUrl: yup.string().required("Prenom is required"),
     telephone: yup.string().required("Telephone is required"),
   });
   const handleModalOpen = () => {
@@ -83,18 +84,22 @@ const AboutDeveloper = () => {
     resolver: yupResolver(FormValidationSchema),
     mode: "all",
   });
+  var iddev = developer.id;
   const onSubmit = (data) => {
     //console.log(data.nom);
     const promotion = {
       nom: data.nom,
       prenom: data.prenom,
-      username: data.email,
-      password: data.password,
-      dateNaissance: data.dateNaissance,
+      jobTitle: data.jobTitle,
+      description: data.description,
+      twitterUrl: data.twitterUrl,
+      gitHubUrl: data.gitHubUrl,
+      linkedinUrl: data.linkedinUrl,
       telephone: data.telephone,
+      id: iddev,
     };
 
-    dispatch(insertDeveloper(promotion))
+    dispatch(editDeveloper(promotion))
       .unwrap()
       .then(() => {
         reset();
@@ -103,77 +108,15 @@ const AboutDeveloper = () => {
       .catch((err) => {
         console.log(err);
       });
+    dispatch(fetchDeveloper(id));
   };
 
   return (
     <div>
       <div>
         <div className="space-y-5 profile-page">
-          <div className="profiel-wrap px-[35px] pb-10 md:pt-[84px] pt-10 rounded-lg bg-white dark:bg-slate-800 lg:flex lg:space-y-0 space-y-6 justify-between items-end relative z-[1]">
-            <div className="bg-slate-900 dark:bg-slate-700 absolute left-0 top-0 md:h-1/2 h-[150px] w-full z-[-1] rounded-t-lg"></div>
-            <div className="profile-box flex-none md:text-start text-center">
-              <div className="md:flex items-end md:space-x-6 rtl:space-x-reverse">
-                <div className="flex-none">
-                  <div className="md:h-[186px] md:w-[186px] h-[140px] w-[140px] md:ml-0 md:mr-0 ml-auto mr-auto md:mb-0 mb-4 rounded-full ring-4 ring-slate-100 relative">
-                    <img
-                      src={developer.imagePublicId}
-                      alt={developer.nom}
-                      className="w-full h-full object-cover rounded-full"
-                    />
-                    <Button
-                      style={{ padding: "0" }} // Use "style" instead of "state" for inline styles
-                      onClick={handleModalOpen}
-                      className="absolute right-2 h-8 w-8 bg-slate-50 text-slate-600 rounded-full shadow-sm flex flex-col items-center justify-center md:top-[140px] top-[100px]"
-                    >
-                      <FiEdit />
-                    </Button>
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <div className="text-2xl font-medium text-slate-900 dark:text-slate-200 mb-[3px]">
-                    {developer.nom + " " + developer.prenom}
-                  </div>
-                  <div className="text-sm font-light text-slate-600 dark:text-slate-400">
-                    Front End Developer
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="profile-info-500 md:flex md:text-start text-center flex-1 max-w-[516px] md:space-y-0 space-y-4">
-              <div className="flex-1">
-                <div className="text-base text-slate-900 dark:text-slate-300 font-medium mb-1"></div>
-                <div className="text-sm text-slate-600 font-light dark:text-slate-300"></div>
-              </div>
-              <div className="flex-1 " style={{ marginRight: "10px" }}>
-                <div className="text-base text-slate-900 dark:text-slate-300 font-medium mb-1">
-                  <Button
-                    icon="heroicons-outline:message-i"
-                    text="send message"
-                    className="btn-outline-primary rounded-[999px]"
-                    iconPosition="right"
-                  />
-                </div>
-                <div className="text-sm text-slate-600 font-light dark:text-slate-300"></div>
-              </div>
-
-              <div className="flex-1">
-                <div className="text-base text-slate-900 dark:text-slate-300 font-medium mb-1">
-                  <Button
-                    icon="heroicons-outline:newspaper"
-                    text="CV PDF"
-                    className="btn-outline-primary rounded-[999px]"
-                    iconPosition="right"
-                  />
-                </div>
-                <div className="text-sm text-slate-600 font-light dark:text-slate-300"></div>
-              </div>
-            </div>
-          </div>
-          <div>
-            {/* Other developer profile information */}
-            <DownloadCVButton developerId={developer.cvPublicId} />
-          </div>
+          <DeveloperInfo developer = {developer}/>
+          <div>{/* Other developer profile information */}</div>
           <div className="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-3">
             <GroupChart4 />
           </div>
@@ -283,7 +226,7 @@ const AboutDeveloper = () => {
                   </li>
                 </ul>
               </Card>
-              <Modal
+              <Modal 
                 activeModal={isModalOpen}
                 onClose={handleModalClose}
                 title="edit Info"
@@ -304,14 +247,14 @@ const AboutDeveloper = () => {
                       register={register}
                     />
                     <Textinput
-                      name="jobTitel"
+                      name="jobTitle"
                       label="job titel"
                       placeholder="job titel"
                       register={register}
                     />
 
                     <Textinput
-                      name="descreption"
+                      name="description"
                       label="descreption"
                       placeholder="descreption"
                       register={register}
@@ -329,7 +272,7 @@ const AboutDeveloper = () => {
                       register={register}
                     />
                     <Textinput
-                      name="githubUrl"
+                      name="gitHubUrl"
                       label="github url"
                       placeholder="github url"
                       register={register}
@@ -384,10 +327,9 @@ const AboutDeveloper = () => {
                 <div className="text-sm">{developer.description}</div>
               </Card>
               <br></br>
-              <ExperiencesOfDeveloper idDeveloper={developer.id}/>
+              <ExperiencesOfDeveloper idDeveloper={developer.id} />
               <br></br>
-              <FormationOfDeveloper/>
-              
+              <FormationOfDeveloper devfoemation={developer.educations} idDeveloper={developer.id} />
             </div>
           </div>
         </div>
