@@ -12,12 +12,9 @@ import Textinput from "@/components/ui/Textinput";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchDeveloper,
-  fetchDevelopers,
-  deleteDeveloper,
-  insertDeveloper,
-  editDeveloper,
-  addEducation,addFormation
+  addFormation
 } from "../../store/reducers/developerSlice";
+import AccordionFormation from "./AccordionFormation";
 
 const FormationOfDeveloper = ({ idDeveloper ,devfoemation }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -109,7 +106,7 @@ const FormationOfDeveloper = ({ idDeveloper ,devfoemation }) => {
           icon={<MdOutlineAddCircleOutline />}
           onClick={handleModalOpen}
         >
-          <Accordion items={devfoemation} />
+          <AccordionFormation items={devfoemation} />
         </Card>
         <Modal
           activeModal={isModalOpen}

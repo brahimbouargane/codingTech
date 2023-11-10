@@ -327,7 +327,7 @@ const AboutDeveloper = () => {
                 <div className="text-sm">{developer.description}</div>
               </Card>
               <br></br>
-              <ExperiencesOfDeveloper idDeveloper={developer.id} />
+              <ExperiencesOfDeveloper idDeveloper={developer.id} devEx = {developer.experiences} />
               <br></br>
               <FormationOfDeveloper devfoemation={developer.educations} idDeveloper={developer.id} />
             </div>

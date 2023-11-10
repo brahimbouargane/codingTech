@@ -33,36 +33,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import FormGroup from "@/components/ui/FormGroup";
 
-import {
-  fetchFormers,
-  fetchFormer,
-  deleteFormer,
-  insertFormer,
-  editFormer,
-} from "../../store/reducers/formerSlice";
-
-const IndeterminateCheckbox = React.forwardRef(
-  ({ indeterminate, ...rest }, ref) => {
-    const defaultRef = React.useRef();
-    const resolvedRef = ref || defaultRef;
-
-    React.useEffect(() => {
-      resolvedRef.current.indeterminate = indeterminate;
-    }, [resolvedRef, indeterminate]);
-
-    return (
-      <>
-        <input
-          type="checkbox"
-          ref={resolvedRef}
-          {...rest}
-          className="table-checkbox"
-        />
-      </>
-    );
-  }
-);
-
 const DisplayDevelopers = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -134,16 +104,14 @@ const DisplayDevelopers = () => {
                   className="object-cover w-full h-full rounded-full"
                 />
               </span>
-              <span className="text-sm text-slate-600 dark:text-slate-300 capitalize">
-                {row?.cell?.value.name}
-              </span>
+              
             </span>
           </div>
         );
       },
     },
     {
-      Header: "UserName",
+      Header: "Email",
       accessor: "username",
       Cell: (row) => {
         return <span>#{row?.cell?.value}</span>;
@@ -164,8 +132,8 @@ const DisplayDevelopers = () => {
       },
     },
     {
-      Header: "Salair",
-      accessor: "salair",
+      Header: "Nom",
+      accessor: "nom",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
@@ -253,24 +221,7 @@ const DisplayDevelopers = () => {
     usePagination,
     useRowSelect,
 
-    (hooks) => {
-      hooks.visibleColumns.push((columns) => [
-        {
-          id: "selection",
-          Header: ({ getToggleAllRowsSelectedProps }) => (
-            <div>
-              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-            </div>
-          ),
-          Cell: ({ row }) => (
-            <div>
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-            </div>
-          ),
-        },
-        ...columns,
-      ]);
-    }
+    
   );
   const {
     getTableProps,

@@ -18,8 +18,9 @@ import {
   editDeveloper,
   addEducation,
 } from "../../store/reducers/developerSlice";
+import AccordionEx from "./AccordionEx";
 
-const ExperiencesOfDeveloper = ({ idDeveloper }) => {
+const ExperiencesOfDeveloper = ({ idDeveloper ,devEx}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [dateNaissance, setDateNaissance] = useState(null);
@@ -115,7 +116,7 @@ const ExperiencesOfDeveloper = ({ idDeveloper }) => {
           icon={<MdOutlineAddCircleOutline />}
           onClick={handleModalOpen}
         >
-          <Accordion items={items} onClick={handellClicke} />
+          <AccordionEx items={devEx} onClick={handellClicke} />
         </Card>
         <Modal
           activeModal={isModalOpen}

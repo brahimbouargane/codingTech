@@ -35,6 +35,7 @@ function DeveloperInfo({ developer }) {
             "Content-Type": "multipart/form-data",
           },
         }
+        
       );
 
       // Handle the response as needed
