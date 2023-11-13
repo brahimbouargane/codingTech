@@ -112,7 +112,7 @@ const ExperiencesOfDeveloper = ({ idDeveloper ,devEx}) => {
     <>
       <div>
         <Card
-          title="EXPÉRIENCES PROFESSIONNELLES"
+          title="EXPÉRIENCES "
           icon={<MdOutlineAddCircleOutline />}
           onClick={handleModalOpen}
         >

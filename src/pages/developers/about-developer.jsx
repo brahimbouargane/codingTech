@@ -4,6 +4,7 @@ import Icon from "@/components/ui/Icon";
 import Card from "@/components/ui/Card";
 import Modal from "@/components/ui/Modal";
 import Textinput from "@/components/ui/Textinput";
+import TeamTable from "@/components/partials/Table/team-table";
 import Accordion from "@/components/ui/Accordion";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useSelector, useDispatch } from "react-redux";
@@ -115,7 +116,7 @@ const AboutDeveloper = () => {
     <div>
       <div>
         <div className="space-y-5 profile-page">
-          <DeveloperInfo developer = {developer}/>
+          <DeveloperInfo developer={developer} />
           <div>{/* Other developer profile information */}</div>
           <div className="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-3">
             <GroupChart4 />
@@ -226,7 +227,7 @@ const AboutDeveloper = () => {
                   </li>
                 </ul>
               </Card>
-              <Modal 
+              <Modal
                 activeModal={isModalOpen}
                 onClose={handleModalClose}
                 title="edit Info"
@@ -290,46 +291,26 @@ const AboutDeveloper = () => {
                 </form>
               </Modal>
               <br></br>
-              <Card
-                title="Height Examples"
-                icon={<FiEdit />}
-                onClick={handleModalOpen}
-              >
-                <div className="space-y-4">
-                  <ProgressBar
-                    className="bg-info-500"
-                    value={50}
-                    title="JAVA"
-                  />
-                  <ProgressBar
-                    value={70}
-                    title="SPRING BOOT"
-                    backClass="h-[10px] rounded-[999px]"
-                    className="bg-info-500"
-                  />
-                  <ProgressBar
-                    value={50}
-                    title="LARAVEL"
-                    backClass="h-[10px] rounded-[999px]"
-                    className="bg-info-500"
-                  />
-                  <ProgressBar
-                    value={50}
-                    title="PHP"
-                    backClass="h-[10px] rounded-[999px]"
-                    className="bg-info-500"
-                  />
-                </div>
-              </Card>
-            </div>
-            <div className="lg:col-span-8 col-span-12">
               <Card title="About Me" noborder>
                 <div className="text-sm">{developer.description}</div>
               </Card>
+            </div>
+            <div className="lg:col-span-8 col-span-12">
+              <Card title="project perssoneil" noborder>
+                <TeamTable />
+              </Card>
               <br></br>
-              <ExperiencesOfDeveloper idDeveloper={developer.id} devEx = {developer.experiences} />
-              <br></br>
-              <FormationOfDeveloper devfoemation={developer.educations} idDeveloper={developer.id} />
+              <div className="grid  xl:grid-cols-2 grid-cols-1 gap-5">
+                <ExperiencesOfDeveloper
+                  idDeveloper={developer.id}
+                  devEx={developer.experiences}
+                />
+
+                <FormationOfDeveloper
+                  devfoemation={developer.educations}
+                  idDeveloper={developer.id}
+                />
+              </div>
             </div>
           </div>
         </div>
