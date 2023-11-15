@@ -20,7 +20,12 @@ import {
 import ProgressBar from "@/components/ui/ProgressBar";
 import Button from "@/components/ui/Button";
 import GroupChart4 from "@/components/partials/widget/chart/group-chart-4";
+import Carousel from "@/components/ui/Carousel";
+import { SwiperSlide } from "swiper/react";
 
+import c1 from "@/assets/images/all-img/c1.png";
+import c2 from "@/assets/images/all-img/c2.png";
+import c3 from "@/assets/images/all-img/c3.png";
 import {
   FaSquareGithub,
   FaSquareXTwitter,
@@ -37,6 +42,7 @@ import {
   editDeveloper,
 } from "../../store/reducers/developerSlice";
 import DeveloperInfo from "./DeveloperInfo";
+import DeveloperProject from "./DeveloperProject";
 
 const AboutDeveloper = () => {
   const developer = useSelector((state) => state.developer.developer);
@@ -124,6 +130,11 @@ const AboutDeveloper = () => {
 
           <div className="grid grid-cols-12 gap-6">
             <div className="lg:col-span-4 col-span-12">
+              {" "}
+              <Card title="About Me" noborder>
+                <div className="text-sm">{developer.description}</div>
+              </Card>
+              <br></br>
               <Card
                 title="Info Devloper "
                 icon={<FiEdit />}
@@ -290,27 +301,27 @@ const AboutDeveloper = () => {
                   </div>
                 </form>
               </Modal>
-              <br></br>
-              <Card title="About Me" noborder>
-                <div className="text-sm">{developer.description}</div>
-              </Card>
             </div>
             <div className="lg:col-span-8 col-span-12">
-              <Card title="project perssoneil" noborder>
-                <TeamTable />
-              </Card>
-              <br></br>
-              <div className="grid  xl:grid-cols-2 grid-cols-1 gap-5">
-                <ExperiencesOfDeveloper
-                  idDeveloper={developer.id}
-                  devEx={developer.experiences}
-                />
-
+              <div>
                 <FormationOfDeveloper
                   devfoemation={developer.educations}
                   idDeveloper={developer.id}
                 />
               </div>
+              <br></br>
+
+              <div>
+                <ExperiencesOfDeveloper
+                  idDeveloper={developer.id}
+                  devEx={developer.experiences}
+                />
+              </div>
+              <br></br>
+              <DeveloperProject
+                idDeveloper={developer.id}
+                devProject={developer.projects}
+              />
             </div>
           </div>
         </div>

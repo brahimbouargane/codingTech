@@ -56,9 +56,9 @@ const Accordion = ({ items, className = "space-y-5", onClick }) => {
                 <div className="flex justify-between">
                   <p>{item.nomEcole}</p>
                   <p>
-                    Date de début: {item.dateDebut} Date de fin: {item.datefin}
+                    début: {item.dateDebut} fin: {item.datefin}
                   </p>
-                  <button onClick={onClick}>ok</button>
+                  
                 </div>
               </div>
             </div>

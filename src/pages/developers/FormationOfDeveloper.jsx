@@ -46,6 +46,10 @@ const FormationOfDeveloper = ({ idDeveloper ,devfoemation }) => {
   ]);
   const dispatch = useDispatch();
 
+  const refreshComponent = () => {
+    dispatch(fetchDeveloper(idDeveloper));
+  };
+
   const FormValidationSchema = yup.object({
     nomEcole: yup.string().required("Nom is required"),
     date_debut: yup.date().required("date naissance is required"),
@@ -106,7 +110,7 @@ const FormationOfDeveloper = ({ idDeveloper ,devfoemation }) => {
           icon={<MdOutlineAddCircleOutline />}
           onClick={handleModalOpen}
         >
-          <AccordionFormation items={devfoemation} />
+          <AccordionFormation items={devfoemation} idDev = {idDeveloper}  onDeletion={refreshComponent}  />
         </Card>
         <Modal
           activeModal={isModalOpen}

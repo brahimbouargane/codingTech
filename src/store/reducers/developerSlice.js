@@ -195,6 +195,46 @@ export const editDeveloper = createAsyncThunk(
     }
   }
 );
+export const addProject = createAsyncThunk(
+  "developers/addProject",
+  async (item, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+    const {
+      dateFin,
+      dateDebut,
+      urlProject,
+      projectName,
+      status,
+      developer_id,
+    } = item;
+    const data = {
+      dateFin,
+      dateDebut,
+      projectName,
+      status,
+      urlProject,
+      developer_id,
+    };
+
+    console.log(data);
+    try {
+      const response = await axios.put(
+        `${API}developers/${item.developer_id}/project`,
+        data
+      );
+
+      if (response.status !== 200) {
+        // You can adjust the status code condition based on your API
+        throw new Error("Failed to add education");
+      }
+
+      const addedEducation = response.data;
+      return addedEducation;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 const developersSlice = createSlice({
   name: "developer",
@@ -295,9 +335,25 @@ const developersSlice = createSlice({
     [addFormation.fulfilled]: (state, action) => {
       state.loading = false;
       state.developer = action.payload;
+      state.experiences= state.developer.experiences
       state.records.push(action.payload);
     },
     [addFormation.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+
+    [addProject.pending]: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    [addProject.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.developer = action.payload;
+      state.experiences= state.developer.experiences
+      state.records.push(action.payload);
+    },
+    [addProject.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },

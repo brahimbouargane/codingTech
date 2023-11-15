@@ -1,8 +1,17 @@
 import { useState } from "react";
 import Icon from "@/components/ui/Icon";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const AccordionEx = ({ items, className = "space-y-5", onClick }) => {
+const AccordionEx = ({
+  items,
+  className = "space-y-5",
+  onClick,
+  idDev,
+  onDeletion,
+}) => {
   const [activeIndex, setActiveIndex] = useState(null);
+  const navigate = useNavigate();
 
   // Check if items is an array before mapping
   if (!Array.isArray(items)) {
@@ -15,6 +24,26 @@ const AccordionEx = ({ items, className = "space-y-5", onClick }) => {
       setActiveIndex(null);
     } else {
       setActiveIndex(index);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      console.log(id);
+      const response = await axios.delete(
+        `http://localhost:7777/experiences/${id}`
+      );
+      if (response.status !== 204) {
+        throw new Error("Échec de la suppression de l'éducation");
+      } else {
+        // Appelez la fonction de rafraîchissement du composant parent
+        onDeletion();
+      }
+
+      console.log(`Education with ID ${id} deleted successfully.`);
+    } catch (error) {
+      // Handle errors
+      console.error("Error deleting education:", error);
     }
   };
 
@@ -33,7 +62,12 @@ const AccordionEx = ({ items, className = "space-y-5", onClick }) => {
             }`}
             onClick={() => toggleAccordion(index)}
           >
-            <span>{item.jobTitle} </span>
+            <span>{item.nomLentreprise} </span>
+            {activeIndex !== index && ( // Only render the span if activeIndex === index
+              <span>
+                {item.dateDebut} // {item.dateFin}
+              </span>
+            )}
             <span
               className={`text-slate-900 dark:text-white text-[22px] transition-all duration-300 h-5 ${
                 activeIndex === index ? "rotate-180 transform" : ""
@@ -52,13 +86,35 @@ const AccordionEx = ({ items, className = "space-y-5", onClick }) => {
               } text-sm text-slate-600 font-normal bg-white dark:bg-slate-900 dark:text-slate-300 rounded-b-md`}
             >
               <div className="px-8 py-4">
-                <div dangerouslySetInnerHTML={{ __html: item.description }} />
+                <div
+                  style={{ color: "#1e293b" }}
+                  dangerouslySetInnerHTML={{ __html: item.jobTitle }}
+                />
                 <div className="flex justify-between">
-                  <p>{item.nomLentreprise}</p>
-                  <p>
-                    Date de début: {item.dateDebut} Date de fin: {item.datefin}
-                  </p>
-                  <button onClick={onClick}>ok</button>
+                  <p>{item.description}</p>
+                </div>
+                <p>
+                  début: {item.dateDebut} fin: {item.datefin}
+                </p>
+                <div className="flex justify-between">
+                  <div>
+                    <p> </p>
+                  </div>
+                  <div>
+                    <button
+                      className="btn btn-white text-center"
+                      style={{ color: "#D75052" }}
+                      onClick={() => handleDelete(item.id)}
+                    >
+                      Delete
+                    </button>
+                    <button
+                      className="btn btn-white text-center"
+                      onClick={onClick}
+                    >
+                      update
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

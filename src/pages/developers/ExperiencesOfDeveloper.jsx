@@ -51,6 +51,10 @@ const ExperiencesOfDeveloper = ({ idDeveloper ,devEx}) => {
   const dispatch = useDispatch();
 
 
+  const refreshComponent = () => {
+    dispatch(fetchDeveloper(idDeveloper));
+  };
+
  
 
   const FormValidationSchema = yup.object({
@@ -78,9 +82,7 @@ const ExperiencesOfDeveloper = ({ idDeveloper ,devEx}) => {
     mode: "all",
   });
 
-  const handellClicke = () => {
-    console.log("handellClicke");
-  };
+  
 
   
   
@@ -116,7 +118,7 @@ const ExperiencesOfDeveloper = ({ idDeveloper ,devEx}) => {
           icon={<MdOutlineAddCircleOutline />}
           onClick={handleModalOpen}
         >
-          <AccordionEx items={devEx} onClick={handellClicke} />
+          <AccordionEx items={devEx} onDeletion={refreshComponent}  idDev={idDeveloper} />
         </Card>
         <Modal
           activeModal={isModalOpen}
