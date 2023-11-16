@@ -13,27 +13,27 @@ const statistics = [
   {
     title: "Total Project",
     count: "45",
-
     bg: "bg-info-500",
     text: "text-warning-500",
     percent: "8.67%",
     icon: "heroicons-outline:chart-pie",
   },
-  {
-    title: "Hours",
-    count: "190",
-    bg: "bg-info-500",
-    text: "text-primary-500",
-    percent: "1.67%  ",
-    icon: "heroicons-outline:clock",
-  },
+
   {
     title: "années d'expérience.",
     count: "5",
     bg: "bg-info-500",
     text: "text-success-500",
     percent: "11.67%  ",
-    icon: "heroicons-outline:calculator",
+    icon: "heroicons-outline:clock",
+  },
+  {
+    title: "View",
+    count: "15",
+    bg: "bg-info-500",
+    text: "text-primary-500",
+    percent: "1.67%  ",
+    icon: "heroicons-outline:eye",
   },
 ];
 const GroupChart4 = () => {

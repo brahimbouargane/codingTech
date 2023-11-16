@@ -77,7 +77,7 @@ const COLUMNS = [
     accessor: "action",
     Cell: (row) => {
       return (
-        <div className=" text-center">
+        <div className=" text-center" style={{zIndex:3000}}>
           <Dropdown
             classMenuItems="right-0 w-[140px] top-[110%] "
             label={
@@ -86,11 +86,12 @@ const COLUMNS = [
               </span>
             }
           >
-            <div className="divide-y divide-slate-100 dark:divide-slate-800">
+            <div className="divide-y divide-slate-100 dark:divide-slate-800" style={{zIndex:3000}}>
               {actions.map((item, i) => (
                 <Menu.Item key={i}>
-                  <div
-                    className={`
+                  <div className="" >
+                    <div
+                      className={`
                 
                   ${
                     item.name === "delete"
@@ -99,11 +100,12 @@ const COLUMNS = [
                   }
                    w-full border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
                    first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse `}
-                  >
-                    <span className="text-base">
-                      <Icon icon={item.icon} />
-                    </span>
-                    <span>{item.name}</span>
+                    >
+                      <span className="text-base">
+                        <Icon icon={item.icon} />
+                      </span>
+                      <span>{item.name}</span>
+                    </div>
                   </div>
                 </Menu.Item>
               ))}
@@ -125,6 +127,13 @@ const TableProject = () => {
       dateDebut: "2023-01-01",
       dateFin: "2023-02-01",
       action: "edit",
+    },
+    {
+      projectName: "Project B",
+      status: "complete",
+      dateDebut: "2023-02-01",
+      dateFin: "2023-03-01",
+      action: "view",
     },
     {
       projectName: "Project B",

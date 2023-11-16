@@ -117,7 +117,7 @@ const AboutDeveloper = () => {
       });
     dispatch(fetchDeveloper(id));
   };
-
+                      
   return (
     <div>
       <div>

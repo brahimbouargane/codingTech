@@ -93,7 +93,7 @@ const AccordionFormation = ({
                 />
 
                 <div className="flex justify-between" style={{ margin: "2px" }}>
-                  <p className="text-sm font-light text-slate-600 dark:text-slate-300">
+                  <p >
                     {" "}
                     - Je suis REDA BELOURHZAL, un développeur backend chevronné
                     maîtrisant des technologies telles que Spring Boot, UML,
