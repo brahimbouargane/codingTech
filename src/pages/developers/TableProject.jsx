@@ -2,6 +2,8 @@ import React, { useState, useMemo, useEffect } from "react";
 import Icon from "@/components/ui/Icon";
 import Dropdown from "@/components/ui/Dropdown";
 import { Menu } from "@headlessui/react";
+import Tooltip from "@/components/ui/Tooltip";
+import { Link, useNavigate } from "react-router-dom";
 import {
   useTable,
   useRowSelect,
@@ -9,6 +11,7 @@ import {
   useGlobalFilter,
   usePagination,
 } from "react-table";
+import axios from "axios";
 
 const actions = [
   {
@@ -25,102 +28,170 @@ const actions = [
   },
 ];
 
-const COLUMNS = [
-  {
-    Header: "Project nom",
-    accessor: "projectName",
-    Cell: (row) => {
-      return <span>{row?.cell?.value}</span>;
-    },
-  },
-  {
-    Header: "status",
-    accessor: "status",
-    Cell: (row) => {
-      return (
-        <span className="block min-w-[140px] text-left">
-          <span className="inline-block text-center mx-auto py-1">
-            {row?.cell?.value === "progress" && (
-              <span className="flex items-center space-x-3 rtl:space-x-reverse">
-                <span className="h-[6px] w-[6px] bg-danger-500 rounded-full inline-block ring-4 ring-opacity-30 ring-danger-500"></span>
-                <span>In progress</span>
-              </span>
-            )}
-            {row?.cell?.value === "complete" && (
-              <span className="flex items-center space-x-3 rtl:space-x-reverse">
-                <span className="h-[6px] w-[6px] bg-success-500 rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
-
-                <span>Complete</span>
-              </span>
-            )}
-          </span>
-        </span>
-      );
-    },
-  },
-  {
-    Header: "date dubet",
-    accessor: "dateDebut",
-    Cell: (row) => {
-      return <span>{row?.cell?.value}</span>;
-    },
-  },
-  {
-    Header: "date fin",
-    accessor: "dateFin",
-    Cell: (row) => {
-      return <span>{row?.cell?.value}</span>;
-    },
-  },
-  {
-    Header: "action",
-    accessor: "action",
-    Cell: (row) => {
-      return (
-        <div className=" text-center" style={{zIndex:3000}}>
-          <Dropdown
-            classMenuItems="right-0 w-[140px] top-[110%] "
-            label={
-              <span className="text-xl text-center block w-full">
-                <Icon icon="heroicons-outline:dots-vertical" />
-              </span>
-            }
-          >
-            <div className="divide-y divide-slate-100 dark:divide-slate-800" style={{zIndex:3000}}>
-              {actions.map((item, i) => (
-                <Menu.Item key={i}>
-                  <div className="" >
-                    <div
-                      className={`
-                
-                  ${
-                    item.name === "delete"
-                      ? "bg-danger-500 text-danger-500 bg-opacity-30   hover:bg-opacity-100 hover:text-white"
-                      : "hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50"
-                  }
-                   w-full border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
-                   first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse `}
-                    >
-                      <span className="text-base">
-                        <Icon icon={item.icon} />
-                      </span>
-                      <span>{item.name}</span>
-                    </div>
-                  </div>
-                </Menu.Item>
-              ))}
-            </div>
-          </Dropdown>
-        </div>
-      );
-    },
-  },
-];
-
-const TableProject = () => {
+const TableProject = ({ devProject, onDeletion }) => {
   const [isReady, setIsReady] = useState(false);
+  const [data, setData] = useState([]);
 
-  const devProject = [
+  const handleDelete = async (id) => {
+    try {
+      // Make a DELETE request to the specified URL
+      const response = await axios.delete(
+        `http://localhost:7777/projects/${id}`
+      );
+      if (response.status !== 204) {
+        throw new Error("Échec de la suppression de l'éducation");
+      } else {
+        // Appelez la fonction de rafraîchissement du composant parent
+        onDeletion();
+      }
+      console.log(`Education with ID ${id} deleted successfully.`);
+    } catch (error) {
+      // Handle errors
+      console.error("Error deleting education:", error);
+    }
+  };
+
+  const deleteHandler = (item) => {
+    handleDelete(item.row.original.id);
+  };
+
+  const COLUMNS = [
+    {
+      Header: "id",
+      accessor: "id",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
+    {
+      Header: "Project nom",
+      accessor: "projectName",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
+    {
+      Header: "status",
+      accessor: "status",
+      Cell: (row) => {
+        return (
+          <span className="block min-w-[140px] text-left">
+            <span className="inline-block text-center mx-auto py-1">
+              {row?.cell?.value === "progress" && (
+                <span className="flex items-center space-x-3 rtl:space-x-reverse">
+                  <span className="h-[6px] w-[6px] bg-danger-500 rounded-full inline-block ring-4 ring-opacity-30 ring-danger-500"></span>
+                  <span>In progress</span>
+                </span>
+              )}
+              {row?.cell?.value === "complete" && (
+                <span className="flex items-center space-x-3 rtl:space-x-reverse">
+                  <span className="h-[6px] w-[6px] bg-success-500 rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
+
+                  <span>Complete</span>
+                </span>
+              )}
+            </span>
+          </span>
+        );
+      },
+    },
+    {
+      Header: "date dubet",
+      accessor: "dateDebut",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
+    {
+      Header: "date fin",
+      accessor: "dateFin",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
+
+    {
+      Header: "action",
+      accessor: "action",
+      Cell: (row) => {
+        return (
+          <div className="flex space-x-3 rtl:space-x-reverse">
+            <Tooltip
+              content="View"
+              placement="top"
+              arrow
+              animation="shift-away"
+            >
+              <Link to={`/about-developer/${row.row.original.id}`}>
+                <button className="action-btn" type="button">
+                  <Icon icon="heroicons:eye" />
+                </button>
+              </Link>
+            </Tooltip>
+
+            <Tooltip
+              content="Delete"
+              placement="top"
+              arrow
+              animation="shift-away"
+              theme="danger"
+            >
+              <button
+                className="action-btn"
+                type="button"
+                onClick={() => deleteHandler(row)}
+              >
+                <Icon icon="heroicons:trash" />
+              </button>
+            </Tooltip>
+          </div>
+        );
+      },
+    },
+  ];
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Check if devProject exists, otherwise use static data
+        const newData = devProject
+          ? devProject
+          : [
+              {
+                projectName: "Project A",
+                status: "progress",
+                dateDebut: "2023-01-01",
+                dateFin: "2023-02-01",
+                action: "edit",
+              },
+              {
+                projectName: "Project B",
+                status: "complete",
+                dateDebut: "2023-02-01",
+                dateFin: "2023-03-01",
+                action: "view",
+              },
+              {
+                projectName: "Project B",
+                status: "complete",
+                dateDebut: "2023-02-01",
+                dateFin: "2023-03-01",
+                action: "view",
+              },
+              // Add more data as needed...
+            ];
+        setData(newData);
+        setIsReady(true);
+      } catch (error) {
+        console.error("Error setting data:", error);
+        setIsReady(true);
+      }
+    };
+
+    fetchData();
+  }, [devProject]);
+
+  /*const devProject = [
     {
       projectName: "Project A",
       status: "progress",
@@ -143,10 +214,9 @@ const TableProject = () => {
       action: "view",
     },
     // Add more data as needed...
-  ];
+  ];*/
 
   const columns = useMemo(() => COLUMNS, []);
-  const data = useMemo(() => devProject, []);
 
   const tableInstance = useTable(
     {
@@ -224,18 +294,7 @@ const TableProject = () => {
     );
   };
 
-  useEffect(() => {
-    // Simulate an async operation, replace this with your actual data fetching logic
-    const fetchData = async () => {
-      // Your data fetching logic...
-      // Simulating data fetching with setTimeout
-      setTimeout(() => {
-        setIsReady(true);
-      }, 2000);
-    };
-
-    fetchData();
-  }, []); // Run only once on mount
+  // Run only once on mount
 
   return (
     <>

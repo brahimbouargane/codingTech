@@ -4,8 +4,6 @@ import Icon from "@/components/ui/Icon";
 import Card from "@/components/ui/Card";
 import Modal from "@/components/ui/Modal";
 import Textinput from "@/components/ui/Textinput";
-import TeamTable from "@/components/partials/Table/team-table";
-import Accordion from "@/components/ui/Accordion";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useSelector, useDispatch } from "react-redux";
 import { TfiTwitter } from "react-icons/tfi";
@@ -17,7 +15,6 @@ import {
   FiCalendar,
   FiEdit,
 } from "react-icons/fi";
-import ProgressBar from "@/components/ui/ProgressBar";
 import Button from "@/components/ui/Button";
 import GroupChart4 from "@/components/partials/widget/chart/group-chart-4";
 import Carousel from "@/components/ui/Carousel";
@@ -43,6 +40,7 @@ import {
 } from "../../store/reducers/developerSlice";
 import DeveloperInfo from "./DeveloperInfo";
 import DeveloperProject from "./DeveloperProject";
+import SkillDeveloper from "./SkillDeveloper";
 
 const AboutDeveloper = () => {
   const developer = useSelector((state) => state.developer.developer);
@@ -117,7 +115,7 @@ const AboutDeveloper = () => {
       });
     dispatch(fetchDeveloper(id));
   };
-                      
+
   return (
     <div>
       <div>
@@ -322,6 +320,8 @@ const AboutDeveloper = () => {
                 idDeveloper={developer.id}
                 devProject={developer.projects}
               />
+              <br></br>
+              <SkillDeveloper skillDev={developer.niveauOfSkillDevelopers}  idDeveloper={developer.id} />
             </div>
           </div>
         </div>

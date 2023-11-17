@@ -94,7 +94,7 @@ const FormationOfDeveloper = ({ idDeveloper ,devfoemation }) => {
     dispatch(addFormation(promotion))
       .unwrap()
       .then(() => {
-        dispatch(fetchDeveloper());
+        dispatch(fetchDeveloper(idDeveloper));
         reset();
         handleModalClose();
       })

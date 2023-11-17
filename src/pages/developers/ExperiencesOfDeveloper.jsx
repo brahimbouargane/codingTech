@@ -26,28 +26,6 @@ const ExperiencesOfDeveloper = ({ idDeveloper ,devEx}) => {
   const [dateNaissance, setDateNaissance] = useState(null);
   const [date_debut, setDate_debut] = useState(null);
   const [date_fin, setDate_fin] = useState(null);
-  const [items, setItems] = useState( [
-    {
-      title: "Technicien Spécialisé en Développement Digital (FullStack)",
-      dateDebut: "2015-12-0-6",
-      datefin: "2015-12-0-6",
-      content: "OFPPT NTIC 1 Casablanca",
-    },
-    {
-      title: "Where i can learn more about using Dashcode?",
-      dateDebut: "2015-12-0-6",
-      datefin: "2015-12-0-6",
-      content:
-        "Jornalists call this critical, introductory section the  and when bridge properly executed, it's the that carries your reader from anheadine try at attention-grabbing to the body of your blog post.",
-    },
-    {
-      title: "Why Dashcode is so important?",
-      dateDebut: "2015-12-0-6",
-      datefin: "2015-12-0-6",
-      content:
-        "Jornalists call this critical, introductory section the  and when bridge properly executed, it's the that carries your reader from anheadine try at attention-grabbing to the body of your blog post.",
-    },
-  ]);
   const dispatch = useDispatch();
 
 
@@ -100,7 +78,7 @@ const ExperiencesOfDeveloper = ({ idDeveloper ,devEx}) => {
     dispatch(addEducation(promotion))
       .unwrap()
       .then(() => {
-        dispatch(fetchDeveloper());
+        dispatch(fetchDeveloper(idDeveloper));
         reset();
         handleModalClose();
     

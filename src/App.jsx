@@ -49,7 +49,7 @@ function App() {
           <Route path="blank-page" element={<BlankPage />} />
           <Route path="AddPromotion" element={<AddPromotion />} />
           <Route path="display-promotions" element={<DisplayPromotion />} />
-          <Route path="about-promotion" element={<AboutPromotion />} />
+          <Route path="about-promotion/:id" element={<AboutPromotion />} />
           <Route path="add-developer" element={<AddDeveloper />} />
           <Route path="display-developers" element={<DisplayDevelopers />} />
           <Route path="about-developer/:id" element={<AboutDeveloper />} />

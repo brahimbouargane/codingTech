@@ -162,6 +162,36 @@ export const addFormation = createAsyncThunk(
     }
   }
 );
+export const addSkill = createAsyncThunk(
+  "developers/addSkill",
+  async (item, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+    const { skillName, niveauOfSkillDeveloper, developer_id } = item;
+    const data = {
+      skillName,
+      niveauOfSkillDeveloper,
+      developer_id,
+    };
+
+    console.log(data);
+    try {
+      const response = await axios.put(
+        `${API}developers/${item.developer_id}/updateNiveauOfSkill`,
+        data
+      );
+
+      if (response.status !== 200) {
+        // You can adjust the status code condition based on your API
+        throw new Error("Failed to add education");
+      }
+
+      const addSkill = response.data;
+      return addSkill;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 export const editDeveloper = createAsyncThunk(
   "developers/editDeveloper",
@@ -335,7 +365,7 @@ const developersSlice = createSlice({
     [addFormation.fulfilled]: (state, action) => {
       state.loading = false;
       state.developer = action.payload;
-      state.experiences= state.developer.experiences
+      state.experiences = state.developer.experiences;
       state.records.push(action.payload);
     },
     [addFormation.rejected]: (state, action) => {
@@ -350,10 +380,25 @@ const developersSlice = createSlice({
     [addProject.fulfilled]: (state, action) => {
       state.loading = false;
       state.developer = action.payload;
-      state.experiences= state.developer.experiences
+      state.experiences = state.developer.experiences;
       state.records.push(action.payload);
     },
     [addProject.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+
+    [addSkill.pending]: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    [addSkill.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.developer = action.payload;
+      state.experiences = state.developer.experiences;
+      state.records.push(action.payload);
+    },
+    [addSkill.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },

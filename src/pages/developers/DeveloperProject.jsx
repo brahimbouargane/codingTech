@@ -40,6 +40,7 @@ const DeveloperProject = ({ idDeveloper, devProject }) => {
     setIsModalOpen(true);
   };
 
+ 
   const handleModalClose = () => {
     setIsModalOpen(false);
   };
@@ -72,7 +73,7 @@ const DeveloperProject = ({ idDeveloper, devProject }) => {
     dispatch(addProject(promotion))
       .unwrap()
       .then(() => {
-        dispatch(fetchDeveloper());
+        dispatch(fetchDeveloper(idDeveloper));
         reset();
         handleModalClose();
       })
@@ -90,8 +91,9 @@ const DeveloperProject = ({ idDeveloper, devProject }) => {
         icon={<MdOutlineAddCircleOutline />}
         noborder
       >
-        <TableProject  />
-
+        {devProject !== null && (
+        <TableProject devProject={devProject} onDeletion={refreshComponent} />
+      )}
       </Card>
       <Modal
         activeModal={isModalOpen}

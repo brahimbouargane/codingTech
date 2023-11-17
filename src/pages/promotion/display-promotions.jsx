@@ -22,7 +22,7 @@ import {
   editPromotion,
 } from "../../store/reducers/promotionSlice";
 
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   useTable,
   useRowSelect,
@@ -153,9 +153,11 @@ const DisplayPromotion = () => {
               arrow
               animation="shift-away"
             >
-              <button className="action-btn" type="button">
-                <Icon icon="heroicons:eye" />
-              </button>
+              <Link to={`/about-promotion/${row.row.original.id}`}>
+                <button className="action-btn" type="button">
+                  <Icon icon="heroicons:eye" />
+                </button>
+              </Link>
             </Tooltip>
             <Tooltip
               content="Edit"
