@@ -70,7 +70,7 @@ function DeveloperInfo({ developer }) {
 
       // Make a POST request to the update endpoint
       const response = await axios.post(
-        `http://localhost:7777/developers/${developer.id}/update`,
+        `http://localhost:7777/developers/${developer.id}/update2`,
         formData,
         {
           headers: {

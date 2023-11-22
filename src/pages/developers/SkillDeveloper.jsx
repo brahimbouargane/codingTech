@@ -19,7 +19,6 @@ const SkillDeveloper = ({ skillDev, idDeveloper }) => {
     dispatch(fetchDeveloper(idDeveloper));
   };
 
-
   const FormValidationSchema = yup.object({
     skillName: yup.string().required("Nom is required"),
     niveauOfSkillDeveloper: yup
@@ -101,17 +100,26 @@ const SkillDeveloper = ({ skillDev, idDeveloper }) => {
         icon={<MdOutlineAddCircleOutline />}
       >
         <div className="space-y-4">
-          <div className="grid xl:grid-cols-6 md:grid-cols-4 grid-cols-3 gap-4">
+          <div className="grid xl:grid-cols-4 md:grid-cols-4 grid-cols-3 gap-4">
             {data.map((skill, index) => (
-              <ProgressBar
-                icon={<TiDelete />}
-                key={index}
-                className="bg-primary-500"
-                value={skill.niveauOfSkillDeveloper}
-                onDeletion={refreshComponent}
-                title={skill.skill.skillName}
-                idSkill = {skill.id}
-              />
+              <div className="flex">
+                <img
+                  src={`https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/${skill.skill.skillName}-colored.svg`}
+                  width="36"
+                  height="36"
+                  alt={skill.skill.skillName}
+                  style={{ marginRight: "10px" }}
+                />
+                <ProgressBar
+                  icon={<TiDelete />}
+                  key={index}
+                  className="bg-primary-500"
+                  value={skill.niveauOfSkillDeveloper}
+                  onDeletion={refreshComponent}
+                  title={skill.skill.skillName}
+                  idSkill={skill.id}
+                />
+              </div>
             ))}
           </div>
         </div>
